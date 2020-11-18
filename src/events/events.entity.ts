@@ -8,6 +8,12 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
+export enum BookingMethod {
+  ONLINE,
+  FREE, 
+  LOCALLY,
+}
+
 @Entity('events')
 export class Event extends BaseEntity {
   constructor(partial: Partial<Event>) {
@@ -24,8 +30,8 @@ export class Event extends BaseEntity {
   name: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar2', length: '64' })
-  bookingMethod: string;
+  @Column({ type: 'enum'})
+  bookingMethod: BookingMethod;
 
   @ApiProperty()
   @Column({ type: 'varchar2', length: '128' })
@@ -37,7 +43,7 @@ export class Event extends BaseEntity {
 
   @ApiProperty()
   @Column({ type: "varchar2", length: '128'})
-  coverFilename: string;
+  pictureFilename: string;
 
   @ApiProperty()
   @Column({ type: 'varchar2', length: '32'})
