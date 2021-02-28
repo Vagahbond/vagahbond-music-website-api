@@ -3,11 +3,22 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { ImageFileMediaTypes } from "src/media-types";
 import { BufferedFile } from "src/minio-client/file.model";
 import { MinioClientService } from "src/minio-client/minio-client.service";
-import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { 
+  DeleteResult, 
+  Repository, 
+  UpdateResult, 
+  FindConditions, 
+  FindManyOptions 
+} from "typeorm";
 import { InsertEventDTO } from "./dto/insert-event.dto";
 import { Event } from './events.entity'
 import { FindEventDTO } from './dto/find-event.dto'
 import { UpdateEventDTO } from './dto/update-event.dto'
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class EventsService {
@@ -25,6 +36,14 @@ export class EventsService {
     event.pictureFilename = await this.uploadPictureCover(picture);
 
     return this.EventsRepository.save(event);
+  }
+
+
+  async paginate(
+    options: IPaginationOptions,
+    searchOptions?: FindConditions<Event> | FindManyOptions<Event>,
+  ): Promise<Pagination<Event>> {
+    return paginate<Event>(this.EventsRepository, options, searchOptions);
   }
 
   async find(): Promise<Event[]> {
@@ -50,7 +69,7 @@ export class EventsService {
       this.minioClientService.delete(existingEvent.pictureFilename);
       return this.EventsRepository.update(
         eventIdObject,
-        {...updateEventDTO, pictureFilename }
+        { ...updateEventDTO, pictureFilename }
       );
     }
 
