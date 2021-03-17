@@ -1,4 +1,4 @@
-import { BookingMethod } from '../events.entity'
+import { BookingMethod } from '../booking-method-enum'
 
 export class InsertEventDTO {
   name: string;
@@ -12,3 +12,5 @@ export class InsertEventDTO {
   location: string;
 
 }
+
+export { BookingMethod }

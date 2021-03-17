@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { MinioClientModule } from "src/minio-client/minio-client.module";
 import { EventsController } from "./events.controller";
 import { EventsService } from "./events.service";
+import { Event } from "./events.entity"
 
 @Module({
   imports: [

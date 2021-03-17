@@ -1,6 +1,6 @@
+import { BookingMethod } from '../booking-method-enum';
 import { IsNotEmpty, IsString, IsOptional, IsEnum, IsDate } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { BookingMethod } from '../events.entity';
 
 export class UpdateEventDTO {
   @IsOptional()
