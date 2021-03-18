@@ -1,5 +1,4 @@
 import { fileURLToPath } from "url";
-
 import { ApiProperty } from '@nestjs/swagger';
 import { BufferedFile } from 'src/minio-client/file.model';
 

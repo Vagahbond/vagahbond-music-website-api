@@ -7,5 +7,4 @@ export class FindEventDTO {
   @Exists(Event)
   @ApiProperty()
   id: string
-
 }
