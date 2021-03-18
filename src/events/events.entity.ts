@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { BookingMethod } from './booking-method-enum'
 import { 
   BaseEntity, 
   Column, 
@@ -8,11 +9,8 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-export enum BookingMethod {
-  ONLINE,
-  FREE, 
-  LOCALLY,
-}
+
+
 
 @Entity('events')
 export class Event extends BaseEntity {
@@ -26,27 +24,32 @@ export class Event extends BaseEntity {
   id: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar2', length: '64' })
+  @Column({ length: '64' })
   name: string;
 
   @ApiProperty()
-  @Column({ type: 'enum'})
+  @Column({ 
+    name: "booking_method",
+    type: 'enum',
+    enum: BookingMethod,
+    default: BookingMethod.FREE
+  })
   bookingMethod: BookingMethod;
 
   @ApiProperty()
-  @Column({ type: 'varchar2', length: '128' })
+  @Column({length: '256' })
   bookingUrl: string;
 
   @ApiProperty()
-  @Column({ type: 'datetime2' })
+  @Column()
   eventDate: Date;
 
   @ApiProperty()
-  @Column({ type: "varchar2", length: '128'})
+  @Column({ length: '256'})
   pictureFilename: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar2', length: '32'})
+  @Column({ length: '32'})
   location: string;
 
   @ApiProperty()

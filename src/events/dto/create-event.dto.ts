@@ -1,6 +1,7 @@
+import { BookingMethod } from '../booking-method-enum'
 import { IsDate, IsEnum, IsOptional, IsString, Length } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BookingMethod } from '../events.entity'
+
 
 export class CreateEventDTO {
   @IsString()

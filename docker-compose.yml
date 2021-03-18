@@ -1,0 +1,39 @@
+version: "3"
+
+volumes:
+  postgres:
+
+networks:
+  backend:
+
+services:
+  api:
+    build: .
+    ports:
+      - "3030:3000"
+    volumes:
+    - ./src:/usr/src/app/src
+    - ./migrate.sh:/usr/app/src/migrate.sh
+    environment:
+      DATABASE_URL: postgresql://docker:password@db:5432/vagahbond
+    networks:
+      backend:
+    depends_on:
+      - db
+    command: sh -c "npm run db:migrate && exec npm run start:dev"
+
+  db:
+    image: postgres:13.1-alpine
+    env_file:
+      - postgres.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docker -d vagahbond"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+       - postgres:/var/lib/postgresql/data
+    ports: 
+      - "5432:5432"
+    networks: 
+      - backend
