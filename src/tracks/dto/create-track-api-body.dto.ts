@@ -1,6 +1,7 @@
-import { fileURLToPath } from "url";
 import { ApiProperty } from '@nestjs/swagger';
+import { AudioFileMediaTypes } from 'src/media-types';
 import { BufferedFile } from 'src/minio-client/file.model';
+import { CreateTrackDTO } from "./create-track.dto";
 
 
 export class CreateTrackAPIBody extends CreateTrackDTO {

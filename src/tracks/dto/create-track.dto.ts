@@ -22,9 +22,4 @@ export class CreateTrackDTO {
   @Length(1, 64)
   @ApiProperty()
   soundHiveLink: string;
-
-  @IsString()
-  @Length(1, 128)
-  @ApiProperty()
-  audioFileName: string;
 }

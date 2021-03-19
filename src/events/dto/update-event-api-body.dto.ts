@@ -12,5 +12,5 @@ export class UpdateEventAPIBody extends UpdateEventDTO {
       ) as string[]
     }`,
   })
-  cover_file?: BufferedFile;
+  picture?: BufferedFile;
 }
