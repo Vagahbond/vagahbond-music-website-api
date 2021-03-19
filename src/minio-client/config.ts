@@ -2,7 +2,7 @@
 // require('dotenv').config();
 
 export const config = {
-  MINIO_ENDPOINT: process.env.MINIO_ENDPOINT || 'localhost',
+  MINIO_ENDPOINT: process.env.MINIO_ENDPOINT || 'minio',
   MINIO_PORT: Number(process.env.MINIO_PORT) || 9000,
   MINIO_ACCESSKEY: process.env.MINIO_ACCESSKEY || 'miniokey',
   MINIO_SECRETKEY: process.env.MINIO_SECRETKEY || 'miniosecret',

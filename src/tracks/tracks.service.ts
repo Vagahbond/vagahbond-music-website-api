@@ -13,7 +13,6 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { FindTrackDTO } from "./dto/find-track.dto";
 import { UpdateTrackDTO } from "./dto/update-track.dto";
-import { BadRequestResponse } from "src/shared/dto/bad-request-response.dto";
 
 @Injectable()
 export class TracksService {

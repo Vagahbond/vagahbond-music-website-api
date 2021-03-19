@@ -2,6 +2,7 @@ version: "3"
 
 volumes:
   postgres:
+  soundhive_minio:
 
 networks:
   backend:
@@ -16,10 +17,14 @@ services:
     - ./migrate.sh:/usr/app/src/migrate.sh
     environment:
       DATABASE_URL: postgresql://docker:password@db:5432/vagahbond
+      MINIO_ACCESS_KEY: miniokey
+      MINIO_SECRET_KEY: miniosecret
+      MINIO_BUCKET: vagahbond
     networks:
       backend:
     depends_on:
       - db
+      - minio
     command: sh -c "npm run db:migrate && exec npm run start:dev"
 
   db:
@@ -35,5 +40,21 @@ services:
        - postgres:/var/lib/postgresql/data
     ports: 
       - "5432:5432"
+    networks: 
+      - backend
+
+  minio:
+    image: minio/minio
+    volumes:
+    - soundhive_minio:/data
+    environment:
+      MINIO_ACCESS_KEY: miniokey
+      MINIO_SECRET_KEY: miniosecret
+    command: server /data
+    ports:
+      - 9000:9000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+    restart: always
     networks: 
       - backend

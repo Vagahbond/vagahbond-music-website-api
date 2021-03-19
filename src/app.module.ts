@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { EventsModule } from './events/events-module';
 import * as ormconfig from './ormconfig';
 import { LoggerModule } from 'nestjs-pino';
+import { TracksModule } from './tracks/tracks-module.dto';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -16,6 +17,7 @@ export function DatabaseOrmModule(): DynamicModule {
 @Module({
   imports: [
     EventsModule,
+    TracksModule,
     TypeOrmModule.forRoot(ormconfig),
     LoggerModule.forRoot({
       pinoHttp: {
