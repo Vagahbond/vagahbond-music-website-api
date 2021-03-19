@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm"
 import { ImageFileMediaTypes } from "src/media-types";
 import { BufferedFile } from "src/minio-client/file.model";
@@ -80,7 +80,7 @@ export class EventsService {
     const event = await this.eventsRepository.findOne(eventIdObject);
 
     if (!event) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
 
     this.minioClientService.delete(event.pictureFilename);
