@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm"
 import { ImageFileMediaTypes } from "src/media-types";
 import { BufferedFile } from "src/minio-client/file.model";
@@ -24,18 +24,18 @@ import {
 export class EventsService {
   constructor(
     @InjectRepository(Event)
-    private EventsRepository: Repository<Event>,
+    private eventsRepository: Repository<Event>,
     private minioClientService: MinioClientService,
-  ) { }
+  ){}
 
   async create(
     insertEventDTO: InsertEventDTO,
     picture: BufferedFile,
   ): Promise<Event> {
     const event = new Event(insertEventDTO)
-    event.pictureFilename = await this.uploadPictureCover(picture);
+    event.pictureFilename = await this.uploadEventPicture(picture);
 
-    return this.EventsRepository.save(event);
+    return this.eventsRepository.save(event);
   }
 
 
@@ -43,19 +43,19 @@ export class EventsService {
     options: IPaginationOptions,
     searchOptions?: FindConditions<Event> | FindManyOptions<Event>,
   ): Promise<Pagination<Event>> {
-    return paginate<Event>(this.EventsRepository, options, searchOptions);
+    return paginate<Event>(this.eventsRepository, options, searchOptions);
   }
 
   async find(): Promise<Event[]> {
-    return this.EventsRepository.find();
+    return this.eventsRepository.find();
   }
 
   async findOne(event: FindEventDTO): Promise<Event | undefined> {
-    return this.EventsRepository.findOne({ id: event.id })
+    return this.eventsRepository.findOne({ id: event.id })
   }
 
   async findBy(params: UpdateEventDTO): Promise<Event[]> {
-    return this.EventsRepository.find(params);
+    return this.eventsRepository.find(params);
   }
 
   async update(
@@ -65,32 +65,32 @@ export class EventsService {
     picture?: BufferedFile): Promise<UpdateResult> {
     if (picture) {
       //upload pic
-      const pictureFilename = await this.uploadPictureCover(picture);
+      const pictureFilename = await this.uploadEventPicture(picture);
       this.minioClientService.delete(existingEvent.pictureFilename);
-      return this.EventsRepository.update(
+      return this.eventsRepository.update(
         eventIdObject,
         { ...updateEventDTO, pictureFilename }
       );
     }
 
-    return this.EventsRepository.update(eventIdObject, updateEventDTO)
+    return this.eventsRepository.update(eventIdObject, updateEventDTO)
   }
 
   async delete(eventIdObject: FindEventDTO): Promise<DeleteResult> {
-    const event = await this.EventsRepository.findOne(eventIdObject);
+    const event = await this.eventsRepository.findOne(eventIdObject);
 
     if (!event) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
 
     this.minioClientService.delete(event.pictureFilename);
-    return this.EventsRepository.delete(event.id);
+    return this.eventsRepository.delete(event.id);
   }
 
-  async uploadPictureCover(file: BufferedFile): Promise<string> {
+  async uploadEventPicture(file: BufferedFile): Promise<string> {
     if (!Object.keys(ImageFileMediaTypes).includes(file.mimetype)) {
       throw new BadRequestException(
-        `Invalid cover_file media type: ${file.mimetype}`,
+        `Invalid picture file media type: ${file.mimetype}`,
       );
     }
 

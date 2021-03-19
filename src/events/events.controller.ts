@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, InternalServerErrorException, NotFoundException, Param, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import {  ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { UnauthorizedResponse } from "src/auth/dto/unauthorized-response.dto";
@@ -37,22 +37,22 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @UseGuards(TokenAuthGuard)
-  @UseInterceptors(FileInterceptor('cover_file'))
+  @UseInterceptors(FileInterceptor('picture'))
   @Post()
   async create(
     @Request() isTokenOk: boolean,
     @Body() createEventDTO: CreateEventDTO,
-    @UploadedFile() coverFile: BufferedFile,
+    @UploadedFile() pictureFile: BufferedFile,
   ): Promise<Event> {
-    if (!coverFile) {
-      throw new BadRequestException('Missing cover_file');
+    if (!pictureFile) {
+      throw new BadRequestException('Missing picture');
     }
 
     const event = await this.eventsService.create(
       {
         ...createEventDTO,
       },
-      coverFile,
+      pictureFile,
     );
 
     return new Event(event);
@@ -108,29 +108,29 @@ export class EventsController {
   })
   @ApiUnauthorizedResponse({
     type: UnauthorizedResponse,
-    description: 'Invalid JWT token',
+    description: 'Invalid token',
   })
   @ApiBearerAuth()
   @UseGuards(TokenAuthGuard)
-  @UseInterceptors(FileInterceptor('cover_file'))
+  @UseInterceptors(FileInterceptor('picture'))
   @Put(':id')
   async update(
     @Request() isTokenOk: boolean,
     @Param() findEventDTO: FindEventDTO,
     @Body() eventData: UpdateEventDTO,
-    @UploadedFile() coverFile: BufferedFile,
+    @UploadedFile() pictureFile: BufferedFile,
   ): Promise<Event> {
     const existingEvent = await this.eventsService.findOne(findEventDTO);
 
     if (!existingEvent) {
-      throw new BadRequestException('Could not find event');
+      throw new NotFoundException('Could not find event');
     }
 
     const result: UpdateResult = await this.eventsService.update(
       findEventDTO,
       eventData,
       existingEvent,
-      coverFile,
+      pictureFile,
     );
 
     // There is always at least one field updated (UpdatedAt)
@@ -142,7 +142,7 @@ export class EventsController {
     const updatedEvent = await this.eventsService.findOne(findEventDTO);
 
     if (!updatedEvent) {
-      throw new BadRequestException('Could not find event');
+      throw new InternalServerErrorException('Could not find event');
     }
 
     return updatedEvent;
