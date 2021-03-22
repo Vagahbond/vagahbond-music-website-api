@@ -88,7 +88,8 @@ export class EventsService {
   }
 
   async uploadEventPicture(file: BufferedFile): Promise<string> {
-    if (!Object.keys(ImageFileMediaTypes).includes(file.mimetype)) {
+
+    if (!Object.values(ImageFileMediaTypes).map(name => name.toString()).includes(file.mimetype)) {
       throw new BadRequestException(
         `Invalid picture file media type: ${file.mimetype}`,
       );

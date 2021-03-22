@@ -13,5 +13,5 @@ export class CreateTrackAPIBody extends CreateTrackDTO {
       ) as string[]
     }`
   })
-  audioFile: BufferedFile
+  trackFile: BufferedFile
 }

@@ -35,8 +35,8 @@ export class EventsController {
     type: UnauthorizedResponse,
     description: 'Invalid token',
   })
-  @ApiBearerAuth()
-  @UseGuards(TokenAuthGuard)
+  // @ApiBearerAuth()
+  // @UseGuards(TokenAuthGuard)
   @UseInterceptors(FileInterceptor('picture'))
   @Post()
   async create(
@@ -45,7 +45,7 @@ export class EventsController {
     @UploadedFile() pictureFile: BufferedFile,
   ): Promise<Event> {
     if (!pictureFile) {
-      throw new BadRequestException('Missing picture');
+      throw new BadRequestException('Missing picture file');
     }
 
     const event = await this.eventsService.create(
@@ -80,13 +80,17 @@ export class EventsController {
 
 
   @ApiOperation({ summary: 'Get an event' })
-  @ApiOkResponse({ type: () => Event, description: 'Track object' })
+  @ApiOkResponse({ type: () => Event, description: 'Event object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
     description: 'Invalid input',
   })
   @Get(':id')
   async findOne(@Param() findEventDTO: FindEventDTO): Promise<Event> {
+    const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+    if (!uuidRegex.test(findEventDTO.id)) {
+      throw new BadRequestException("Please provide a valid ID.")
+    }
     const event: Event | undefined = await this.eventsService.findOne(
       findEventDTO,
     );

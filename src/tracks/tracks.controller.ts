@@ -26,12 +26,13 @@ import { PaginationQuery } from "src/shared/dto/pagination-query.dto";
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { CreateTrackDTO } from "./dto/create-track.dto";
 import { TrackPagination } from "./dto/pagination-response.dto";
-import { Track } from "./tracks.entity";
+import { Track } from "./track.entity";
 import { TracksService } from "./tracks.service";
 import { UpdateTrackAPIBody } from "./dto/update-track-api-body.dto";
 import { FindTrackDTO } from "./dto/find-track.dto";
 import { UpdateTrackDTO } from "./dto/update-track.dto";
 import { UpdateResult } from "typeorm";
+import { CreateTrackAPIBody } from "./dto/create-track-api-body.dto";
 
 @Controller('tracks')
 export class TracksController {
@@ -41,7 +42,7 @@ export class TracksController {
 
   @ApiOperation({ summary: 'Post a track' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: () => Track, description: 'Track object' })
+  @ApiBody({ type: CreateTrackAPIBody, description: 'Track object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
     description: 'Invalid input',
@@ -52,7 +53,7 @@ export class TracksController {
   })
   @ApiBearerAuth()
   @UseGuards(TokenAuthGuard)
-  @UseInterceptors(FileInterceptor('audioFile'))
+  @UseInterceptors(FileInterceptor('trackFile'))
   @Post()
   async create(
     @Request() isTokenOk: boolean,
@@ -60,8 +61,10 @@ export class TracksController {
     @UploadedFile() trackFile: BufferedFile,
   ): Promise<Track> {
     if (!trackFile) {
-      throw new BadRequestException('missing track file');
+      throw new BadRequestException('missing trackFile');
     }
+
+    
 
     const track = await this.tracksService.create(
       {
@@ -86,6 +89,30 @@ export class TracksController {
         route: '/tracks',
       },
     );
+  }
+
+  @ApiOperation({ summary: 'Get a track' })
+  @ApiOkResponse({ type: () => Track, description: "Track object"})
+  @ApiBadRequestResponse({
+    type: BadRequestResponse,
+    description: 'Invalid input',
+  })
+  @Get(':id')
+  async findOne(@Param() findTrackDTO: FindTrackDTO): Promise<Track> {
+    const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
+    if (!uuidRegex.test(findTrackDTO.id)) {
+      throw new BadRequestException("Please provide a valid ID.")
+    }
+
+    const track: Track | undefined = await this.tracksService.findOne(
+      findTrackDTO,
+    );
+
+    if (!track) {
+      throw NotFoundException;
+    }
+
+    return track;
   }
 
   @ApiOperation({ summary: 'Update a track' })

@@ -24,15 +24,15 @@ export class Track extends BaseEntity {
   name: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: '64' })
+  @Column({ type: 'varchar', length: '64', nullable: true })
   soundCloudLink: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: '64' })
+  @Column({ type: 'varchar', length: '64', nullable: true })
   youTubeLink: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: '64' })
+  @Column({ type: 'varchar', length: '64', nullable: true })
   soundHiveLink: string;
 
   @ApiProperty()

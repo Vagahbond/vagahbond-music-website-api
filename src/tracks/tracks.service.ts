@@ -5,7 +5,7 @@ import { BufferedFile } from "src/minio-client/file.model";
 import { MinioClientService } from "src/minio-client/minio-client.service";
 import { DeleteResult, FindConditions, FindManyOptions, Repository, UpdateResult } from "typeorm";
 import { InsertTrackDTO } from "./dto/insert-track.dto";
-import { Track } from "./tracks.entity";
+import { Track } from "./track.entity";
 import {
   IPaginationOptions,
   paginate,
@@ -79,7 +79,8 @@ export class TracksService {
   }
 
   async uploadTrackFile(file: BufferedFile): Promise<string> {
-    if (!Object.keys(AudioFileMediaTypes).includes(file.mimetype)) {
+    
+    if (!Object.values(AudioFileMediaTypes).map(name => name.toString()).includes(file.mimetype)) {
       throw new BadRequestException(
         `Invalid audio file media type ${file.mimetype}`,
       );

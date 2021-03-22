@@ -12,5 +12,5 @@ export class UpdateTrackAPIBody extends UpdateTrackDTO {
       ) as string[]
     }`,
   })
-  audioFile?: BufferedFile;
+  trackFile?: BufferedFile;
 }

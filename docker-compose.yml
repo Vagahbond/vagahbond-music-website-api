@@ -11,7 +11,7 @@ services:
   api:
     build: .
     ports:
-      - "3030:3000"
+      - "3031:3000"
     volumes:
     - ./src:/usr/src/app/src
     - ./migrate.sh:/usr/app/src/migrate.sh
@@ -39,7 +39,7 @@ services:
     volumes:
        - postgres:/var/lib/postgresql/data
     ports: 
-      - "5432:5432"
+      - "5431:5432"
     networks: 
       - backend
 
@@ -52,9 +52,26 @@ services:
       MINIO_SECRET_KEY: miniosecret
     command: server /data
     ports:
-      - 9000:9000
+      - 9001:9000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
     restart: always
+    networks: 
+      - backend
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    ports:
+      - 7999:9000
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:9000 miniokey miniosecret;
+      /usr/bin/mc rm -r --force myminio/vagahbond;
+      /usr/bin/mc mb myminio/vagahbond;
+      /usr/bin/mc policy download myminio/vagahbond;
+      exit 0;
+      "
     networks: 
       - backend

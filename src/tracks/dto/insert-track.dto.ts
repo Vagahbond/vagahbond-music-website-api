@@ -2,10 +2,10 @@
 export class InsertTrackDTO {
   name: string;
 
-  soundCloudLink: string;
+  soundCloudLink?: string;
 
-  youTubeLink: string;
+  youTubeLink?: string;
 
-  soundHiveLink: string;
+  soundHiveLink?: string;
 
 }

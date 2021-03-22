@@ -6,20 +6,20 @@ export class CreateTrackDTO {
   @IsString()
   @Length(1, 64)
   @ApiProperty()
-  name: string;
+  readonly name: string;
 
   @IsString()
   @Length(1, 64)
   @ApiProperty()
-  soundCloudLink: string;
+  readonly soundCloudLink?: string;
 
   @IsString()
   @Length(1, 64)
   @ApiProperty()
-  youTubeLink: string;
+  readonly youTubeLink?: string;
 
   @IsString()
   @Length(1, 64)
   @ApiProperty()
-  soundHiveLink: string;
+  readonly soundHiveLink?: string;
 }

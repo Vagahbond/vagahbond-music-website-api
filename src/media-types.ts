@@ -5,5 +5,6 @@ export enum  ImageFileMediaTypes {
 
 export enum AudioFileMediaTypes {
   MP3 = 'audio/mpeg3',
+  MPEG = 'audio/mpeg',
   WAV = 'audio/WAV',
 }
