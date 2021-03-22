@@ -1,5 +1,5 @@
 import { BookingMethod } from '../booking-method-enum'
-import { IsDate, IsEnum, IsOptional, IsString, Length } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional, IsString, Length } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 
@@ -9,8 +9,8 @@ export class CreateEventDTO {
   @ApiProperty()
   name: string;
 
-  @IsEnum(BookingMethod)
-  @ApiProperty()
+  @IsEnum(BookingMethod, { message: `bookingMethod must be one of these: ${Object.values(BookingMethod).map(str => str.toString())}` })
+  @ApiProperty({ examples: Object.values(BookingMethod).map(str => str.toString()) })
   bookingMethod: BookingMethod;
 
   @IsOptional()
@@ -19,7 +19,7 @@ export class CreateEventDTO {
   @ApiPropertyOptional()
   bookingUrl?: string;
 
-  @IsDate()
+  @IsDateString({ message: 'eventDate must be Date formatted following ISO8601!'})
   @ApiProperty()
   eventDate: Date;
 

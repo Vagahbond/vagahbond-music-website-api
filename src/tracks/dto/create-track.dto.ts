@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, Length } from "class-validator";
+import { IsOptional, IsString, Length } from "class-validator";
 
 export class CreateTrackDTO {
 
@@ -10,16 +10,19 @@ export class CreateTrackDTO {
 
   @IsString()
   @Length(1, 64)
+  @IsOptional()
   @ApiProperty()
   readonly soundCloudLink?: string;
 
   @IsString()
   @Length(1, 64)
+  @IsOptional()
   @ApiProperty()
   readonly youTubeLink?: string;
 
   @IsString()
   @Length(1, 64)
+  @IsOptional()
   @ApiProperty()
   readonly soundHiveLink?: string;
 }

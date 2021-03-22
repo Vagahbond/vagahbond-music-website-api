@@ -8,6 +8,7 @@ import {
   CreateDateColumn, 
   UpdateDateColumn
 } from 'typeorm';
+import { IsOptional } from 'class-validator';
 
 
 
@@ -32,13 +33,14 @@ export class Event extends BaseEntity {
     name: "booking_method",
     type: 'enum',
     enum: BookingMethod,
-    default: BookingMethod.FREE
+    default: BookingMethod.FREE,
   })
   bookingMethod: BookingMethod;
 
   @ApiProperty()
-  @Column({length: '256' })
-  bookingUrl: string;
+  @Column({length: '256', nullable: true })
+  @IsOptional()
+  bookingUrl?: string;
 
   @ApiProperty()
   @Column()
