@@ -7,6 +7,7 @@ import * as ormconfig from './ormconfig';
 import { LoggerModule } from 'nestjs-pino';
 import { TracksModule } from './tracks/tracks-module.dto';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -27,6 +28,7 @@ export function DatabaseOrmModule(): DynamicModule {
         prettyPrint: process.env.NODE_ENV !== 'production',
       },
     }),
+    AuthModule,
 
   ],
   controllers: [AppController],

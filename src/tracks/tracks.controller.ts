@@ -13,16 +13,14 @@ import {
   Query,
   Request,
   UploadedFile,
-  UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { UnauthorizedResponse } from "src/auth/dto/unauthorized-response.dto";
-import { TokenAuthGuard } from "src/auth/token-auth-guard";
 import { BufferedFile } from "src/minio-client/file.model";
-import { BadRequestResponse } from "src/shared/dto/bad-request-response.dto";
-import { PaginationQuery } from "src/shared/dto/pagination-query.dto";
+import { BadRequestResponse } from "src/common/dto/bad-request-response.dto";
+import { PaginationQuery } from "src/common/dto/pagination-query.dto";
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { CreateTrackDTO } from "./dto/create-track.dto";
 import { TrackPagination } from "./dto/pagination-response.dto";
@@ -52,7 +50,6 @@ export class TracksController {
     description: 'Invalid token',
   })
   @ApiBearerAuth()
-  @UseGuards(TokenAuthGuard)
   @UseInterceptors(FileInterceptor('trackFile'))
   @Post()
   async create(
@@ -128,7 +125,6 @@ export class TracksController {
     description: 'Invalid token'
   })
   @ApiBearerAuth()
-  @UseGuards(TokenAuthGuard)
   @UseInterceptors(FileInterceptor('trackFile'))
   @Put(':id')
   async update(
@@ -174,7 +170,6 @@ export class TracksController {
     description: 'Invalid auth token',
   })
   @ApiBearerAuth()
-  @UseGuards(TokenAuthGuard)
   @HttpCode(204)
   @Delete(':id')
   async delete(
