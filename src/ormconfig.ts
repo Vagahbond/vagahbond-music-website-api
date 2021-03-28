@@ -14,7 +14,7 @@ const ormConfig: ConnectionOptions = {
   port: Number(config.port) || 5432,
   username: config.user || '',
   password: config.password || '',
-  database: config.database || 'soundhive',
+  database: config.database || '',
   synchronize: false,
   dropSchema: false,
   migrationsRun: process.env.NODE_ENV === 'production', // run on heroku

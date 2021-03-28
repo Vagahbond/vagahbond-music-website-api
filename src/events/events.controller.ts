@@ -1,6 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, InternalServerErrorException, NotFoundException, Param, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors, } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import {  ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { UnauthorizedResponse } from "src/auth/dto/unauthorized-response.dto";
 import { TokenAuthGuard } from "src/auth/token-auth-guard";
 import { BufferedFile } from "src/minio-client/file.model";
@@ -16,17 +16,19 @@ import { FindEventDTO } from "./dto/find-event.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
 import { UpdateEventAPIBody } from "./dto/update-event-api-body.dto";
 import { UpdateResult } from "typeorm";
+import { NotEmptyPipe } from "src/common/pipes/not-empty-pipe";
+import AffectedResponse from "src/shared/dto/affected-response.dto";
 
 @Controller('events')
 export class EventsController {
   constructor(
     private readonly eventsService: EventsService,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'Post an event' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateEventAPIBody })
-  @ApiCreatedResponse({ type: () => Event, description: 'Event object'})
+  @ApiCreatedResponse({ type: () => Event, description: 'Event object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
     description: 'Invalid input',
@@ -43,7 +45,7 @@ export class EventsController {
     @Request() isTokenOk: boolean,
     @Body() createEventDTO: CreateEventDTO,
     @UploadedFile() pictureFile: BufferedFile,
-  ): Promise<Event> {
+  ): Promise<AffectedResponse> {
     if (!pictureFile) {
       throw new BadRequestException('Missing picture file');
     }
@@ -55,7 +57,10 @@ export class EventsController {
       pictureFile,
     );
 
-    return new Event(event);
+    return {
+      message: "Event successfully created.",
+      url: `/events/${event.id}`
+    };
   }
 
   @ApiOperation({ summary: 'Get all events' })
@@ -80,26 +85,20 @@ export class EventsController {
 
 
   @ApiOperation({ summary: 'Get an event' })
-  @ApiOkResponse({ type: () => Event, description: 'Event object' })
+  @ApiOkResponse({ type: Event, description: 'Event object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
-    description: 'Invalid input',
+    description: 'Invalid identifier',
   })
+  @ApiParam({ name: 'id', type: String, required: true })
   @Get(':id')
-  async findOne(@Param() findEventDTO: FindEventDTO): Promise<Event> {
-    const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
-    if (!uuidRegex.test(findEventDTO.id)) {
-      throw new BadRequestException("Please provide a valid ID.")
-    }
-    const event: Event | undefined = await this.eventsService.findOne(
-      findEventDTO,
-    );
+  async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<Event> {
+    const res =  await this.eventsService.findOne({ id })
 
-    if (!event) {
-      throw NotFoundException;
+    if (!res) {
+      throw new NotFoundException("This event does not exist");
     }
-
-    return event;
+    return res;
   }
 
   @ApiOperation({ summary: 'Update an event' })
@@ -120,18 +119,18 @@ export class EventsController {
   @Put(':id')
   async update(
     @Request() isTokenOk: boolean,
-    @Param() findEventDTO: FindEventDTO,
-    @Body() eventData: UpdateEventDTO,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(NotEmptyPipe) eventData: UpdateEventDTO,
     @UploadedFile() pictureFile: BufferedFile,
-  ): Promise<Event> {
-    const existingEvent = await this.eventsService.findOne(findEventDTO);
+  ): Promise<AffectedResponse> {
+    const existingEvent = await this.eventsService.findOne({id});
 
     if (!existingEvent) {
       throw new NotFoundException('Could not find event');
     }
 
     const result: UpdateResult = await this.eventsService.update(
-      findEventDTO,
+      {id},
       eventData,
       existingEvent,
       pictureFile,
@@ -139,17 +138,12 @@ export class EventsController {
 
     // There is always at least one field updated (UpdatedAt)
     if (!result.affected || result.affected < 1) {
-      throw new BadRequestException('Nothing to update.');
+      throw new HttpException('Nothing to update.', HttpStatus.NOT_MODIFIED);
     }
-
-    // Fetch updated event
-    const updatedEvent = await this.eventsService.findOne(findEventDTO);
-
-    if (!updatedEvent) {
-      throw new InternalServerErrorException('Could not find event');
-    }
-
-    return updatedEvent;
+    return {
+      message: "Event successfully modified.",
+      url: `/events/${id}`
+    };
   }
 
   @ApiOperation({ summary: 'Delete event' })
@@ -174,4 +168,4 @@ export class EventsController {
   }
 }
 
-  
+

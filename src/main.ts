@@ -1,10 +1,31 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { BadRequestException, ClassSerializerInterceptor, ValidationError, ValidationPipe } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  app.enableCors();
+
+  const options = new DocumentBuilder()
+  .setTitle("Vagahbond's website's API")
+  .setDescription("An API to back my musical portfolio")
+  .setVersion('0.1')
+  .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('doc', app, document);
+
+
+  app.useGlobalPipes(new ValidationPipe({
+      exceptionFactory: (errors: ValidationError[] = []) => {
+        return new BadRequestException(errors);
+      }, 
+    })
+    );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

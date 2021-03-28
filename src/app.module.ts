@@ -6,6 +6,7 @@ import { EventsModule } from './events/events-module';
 import * as ormconfig from './ormconfig';
 import { LoggerModule } from 'nestjs-pino';
 import { TracksModule } from './tracks/tracks-module.dto';
+import { ConfigModule } from '@nestjs/config';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -16,6 +17,7 @@ export function DatabaseOrmModule(): DynamicModule {
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     EventsModule,
     TracksModule,
     TypeOrmModule.forRoot(ormconfig),
