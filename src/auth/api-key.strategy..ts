@@ -18,10 +18,4 @@ export class LocalStrategy extends PassportStrategy(HeaderAPIKeyStrategy) {
     }
     return done(null, true, next);
   }); }
-
-  // validate(apiKey: string): void {
-  //   if (!this.authService.validateApiKey(apiKey)) { 
-  //     throw new UnauthorizedException("You are not allowed to perform this action.")
-  //   }
-  // }
 }

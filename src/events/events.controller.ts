@@ -38,6 +38,7 @@ export class EventsController {
     description: 'Invalid token',
   })
   @UseInterceptors(FileInterceptor('picture'))
+  @UseGuards(AuthGuard('headerapikey'))
   @Post()
   async create(
     @Request() isTokenOk: boolean,
@@ -63,7 +64,6 @@ export class EventsController {
 
   @ApiOperation({ summary: 'Get all events' })
   @ApiOkResponse({ type: [EventPagination], description: 'Event objects' })
-  @UseGuards(AuthGuard('headerapikey'))
   @Get()
   async find(
     @Query() paginationQuery: PaginationQuery,
@@ -114,6 +114,7 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('picture'))
+  @UseGuards(AuthGuard('headerapikey'))
   @Put(':id')
   async update(
     @Request() isTokenOk: boolean,
@@ -156,6 +157,7 @@ export class EventsController {
   })
   @ApiBearerAuth()
   @HttpCode(204)
+  @UseGuards(AuthGuard('headerapikey'))
   @Delete(':id')
   async delete(
     @Request() isTokenValid: boolean,
