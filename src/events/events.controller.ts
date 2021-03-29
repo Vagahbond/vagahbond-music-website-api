@@ -1,6 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors, } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors, } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { BufferedFile } from "src/minio-client/file.model";
 import { BadRequestResponse } from "src/common/dto/bad-request-response.dto";
 import { PaginationQuery } from "src/common/dto/pagination-query.dto";
@@ -41,7 +41,6 @@ export class EventsController {
   @UseGuards(AuthGuard('headerapikey'))
   @Post()
   async create(
-    @Request() isTokenOk: boolean,
     @Body() createEventDTO: CreateEventDTO,
     @UploadedFile() pictureFile: BufferedFile,
   ): Promise<AffectedResponse> {
@@ -89,7 +88,7 @@ export class EventsController {
     type: BadRequestResponse,
     description: 'Invalid identifier',
   })
-  @ApiParam({ name: 'id', type: String, required: true })
+  @ApiParam({ name: 'id', type: FindEventDTO, required: true })
   @Get(':id')
   async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<Event> {
     const res =  await this.eventsService.findOne({ id })
@@ -112,12 +111,11 @@ export class EventsController {
     type: UnauthorizedResponse,
     description: 'Invalid token',
   })
-  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: FindEventDTO, required: true})
   @UseInterceptors(FileInterceptor('picture'))
   @UseGuards(AuthGuard('headerapikey'))
   @Put(':id')
   async update(
-    @Request() isTokenOk: boolean,
     @Param('id', ParseUUIDPipe) id: string,
     @Body(NotEmptyPipe) eventData: UpdateEventDTO,
     @UploadedFile() pictureFile: BufferedFile,
@@ -129,7 +127,7 @@ export class EventsController {
     }
 
     const result: UpdateResult = await this.eventsService.update(
-      {id},
+      { id },
       eventData,
       existingEvent,
       pictureFile,
@@ -155,15 +153,14 @@ export class EventsController {
     type: UnauthorizedResponse,
     description: 'Invalid auth token',
   })
-  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: FindEventDTO, required: true})
   @HttpCode(204)
   @UseGuards(AuthGuard('headerapikey'))
   @Delete(':id')
   async delete(
-    @Request() isTokenValid: boolean,
-    @Param() event: FindEventDTO,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<void> {
-    await this.eventsService.delete(event);
+    await this.eventsService.delete({ id });
   }
 }
 

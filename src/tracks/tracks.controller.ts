@@ -5,25 +5,27 @@ import {
   Delete,
   Get,
   HttpCode,
-  InternalServerErrorException,
+  HttpException,
+  HttpStatus,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
-  Request,
   UploadedFile,
+  UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { 
   ApiBadRequestResponse, 
-  ApiBearerAuth, 
   ApiBody, 
   ApiConsumes, 
   ApiNoContentResponse, 
   ApiOkResponse, 
   ApiOperation, 
+  ApiParam, 
   ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { BufferedFile } from "src/minio-client/file.model";
 import { BadRequestResponse } from "src/common/dto/bad-request-response.dto";
@@ -39,6 +41,9 @@ import { UpdateTrackDTO } from "./dto/update-track.dto";
 import { UpdateResult } from "typeorm";
 import { CreateTrackAPIBody } from "./dto/create-track-api-body.dto";
 import { UnauthorizedResponse } from "src/auth/unauthorized-response"
+import { AuthGuard } from "@nestjs/passport";
+import AffectedResponse from "src/common/dto/affected-response.dto";
+import { NotEmptyPipe } from "src/common/pipes/not-empty-pipe";
 
 @Controller('tracks')
 export class TracksController {
@@ -57,19 +62,16 @@ export class TracksController {
     type: UnauthorizedResponse,
     description: 'Invalid token',
   })
-  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('trackFile'))
+  @UseGuards(AuthGuard('headerapikey'))
   @Post()
   async create(
-    @Request() isTokenOk: boolean,
     @Body() createTrackDTO: CreateTrackDTO,
     @UploadedFile() trackFile: BufferedFile,
-  ): Promise<Track> {
+  ): Promise<AffectedResponse> {
     if (!trackFile) {
       throw new BadRequestException('missing trackFile');
     }
-
-    
 
     const track = await this.tracksService.create(
       {
@@ -78,7 +80,10 @@ export class TracksController {
       trackFile,
     );
 
-    return new Track(track);
+    return {
+      message: "Track successfully created",
+      url: `/track/${track.id}`
+    };
   }
 
   @ApiOperation({ summary: 'Get all tracks' })
@@ -97,24 +102,19 @@ export class TracksController {
   }
 
   @ApiOperation({ summary: 'Get a track' })
-  @ApiOkResponse({ type: () => Track, description: "Track object"})
+  @ApiOkResponse({ type: Track, description: "Track object"})
   @ApiBadRequestResponse({
     type: BadRequestResponse,
     description: 'Invalid input',
   })
+  @ApiParam({name: 'id', type: FindTrackDTO, required: true })
   @Get(':id')
-  async findOne(@Param() findTrackDTO: FindTrackDTO): Promise<Track> {
-    const uuidRegex = new RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i)
-    if (!uuidRegex.test(findTrackDTO.id)) {
-      throw new BadRequestException("Please provide a valid ID.")
-    }
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Track> {
 
-    const track: Track | undefined = await this.tracksService.findOne(
-      findTrackDTO,
-    );
+    const track: Track | undefined = await this.tracksService.findOne({ id });
 
     if (!track) {
-      throw NotFoundException;
+      throw new NotFoundException("This track does not exist");;
     }
 
     return track;
@@ -132,39 +132,36 @@ export class TracksController {
     type: UnauthorizedResponse,
     description: 'Invalid token'
   })
-  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: FindTrackDTO, required: true})
   @UseInterceptors(FileInterceptor('trackFile'))
+  @UseGuards(AuthGuard('headerapikey'))
   @Put(':id')
   async update(
-    @Request() isTokenOk: boolean,
-    @Param() findTrackDTO: FindTrackDTO,
-    @Body() trackData: UpdateTrackDTO,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(NotEmptyPipe) trackData: UpdateTrackDTO,
     @UploadedFile() trackFile: BufferedFile,
-  ): Promise<Track> {
-    const existingTrack = await this.tracksService.findOne(findTrackDTO);
+  ): Promise<AffectedResponse> {
+    const existingTrack = await this.tracksService.findOne({ id });
 
     if (!existingTrack) {
       throw new NotFoundException('Could not find track')
     }
 
     const result: UpdateResult = await this.tracksService.update(
-      findTrackDTO,
+      { id },
       trackData,
       existingTrack,
       trackFile,
     )
 
     if (!result.affected || result.affected < 1) {
-      throw new BadRequestException('There was nothing to update')
+      throw new HttpException('There was nothing to update', HttpStatus.NOT_ACCEPTABLE)
     }
 
-    const updatedTrack = await this.tracksService.findOne(findTrackDTO);
-
-    if (!updatedTrack) {
-      throw new InternalServerErrorException('Could not find updated track.')
-    }
-
-    return updatedTrack;
+    return {
+      message: "Track successfully modified.",
+      url: `/tracks/${id}`
+    };
   }
 
   @ApiOperation({ summary: 'Delete track' })
@@ -177,13 +174,12 @@ export class TracksController {
     type: UnauthorizedResponse,
     description: 'Invalid auth token',
   })
-  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: FindTrackDTO, required: true})
   @HttpCode(204)
   @Delete(':id')
   async delete(
-    @Request() isTokenValid: boolean,
-    @Param() track: FindTrackDTO,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<void> {
-    await this.tracksService.delete(track);
+    await this.tracksService.delete({ id });
   }
 }

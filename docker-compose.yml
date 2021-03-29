@@ -68,8 +68,7 @@ services:
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc config host add myminio http://minio:9000 miniokey miniosecret;
-      /usr/bin/mc rm -r --force myminio/vagahbond;
-      /usr/bin/mc mb myminio/vagahbond;
+      /usr/bin/mc mb -p myminio/vagahbond;
       /usr/bin/mc policy download myminio/vagahbond;
       exit 0;
       "
