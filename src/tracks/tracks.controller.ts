@@ -16,8 +16,15 @@ import {
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { UnauthorizedResponse } from "src/auth/dto/unauthorized-response.dto";
+import { 
+  ApiBadRequestResponse, 
+  ApiBearerAuth, 
+  ApiBody, 
+  ApiConsumes, 
+  ApiNoContentResponse, 
+  ApiOkResponse, 
+  ApiOperation, 
+  ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { BufferedFile } from "src/minio-client/file.model";
 import { BadRequestResponse } from "src/common/dto/bad-request-response.dto";
 import { PaginationQuery } from "src/common/dto/pagination-query.dto";
@@ -31,6 +38,7 @@ import { FindTrackDTO } from "./dto/find-track.dto";
 import { UpdateTrackDTO } from "./dto/update-track.dto";
 import { UpdateResult } from "typeorm";
 import { CreateTrackAPIBody } from "./dto/create-track-api-body.dto";
+import { UnauthorizedResponse } from "src/auth/unauthorized-response"
 
 @Controller('tracks')
 export class TracksController {

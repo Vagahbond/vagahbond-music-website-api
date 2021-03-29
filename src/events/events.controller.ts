@@ -1,7 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, Request, UploadedFile, UseInterceptors, } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, NotFoundException, Param, ParseUUIDPipe, Post, Put, Query, Request, UploadedFile, UseGuards, UseInterceptors, } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiParam, ApiUnauthorizedResponse } from "@nestjs/swagger";
-import { UnauthorizedResponse } from "src/auth/dto/unauthorized-response.dto";
 import { BufferedFile } from "src/minio-client/file.model";
 import { BadRequestResponse } from "src/common/dto/bad-request-response.dto";
 import { PaginationQuery } from "src/common/dto/pagination-query.dto";
@@ -17,6 +16,8 @@ import { UpdateEventAPIBody } from "./dto/update-event-api-body.dto";
 import { UpdateResult } from "typeorm";
 import { NotEmptyPipe } from "src/common/pipes/not-empty-pipe";
 import AffectedResponse from "src/common/dto/affected-response.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { UnauthorizedResponse } from "src/auth/unauthorized-response"
 
 @Controller('events')
 export class EventsController {
@@ -36,7 +37,6 @@ export class EventsController {
     type: UnauthorizedResponse,
     description: 'Invalid token',
   })
-  @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('picture'))
   @Post()
   async create(
@@ -63,6 +63,7 @@ export class EventsController {
 
   @ApiOperation({ summary: 'Get all events' })
   @ApiOkResponse({ type: [EventPagination], description: 'Event objects' })
+  @UseGuards(AuthGuard('headerapikey'))
   @Get()
   async find(
     @Query() paginationQuery: PaginationQuery,
