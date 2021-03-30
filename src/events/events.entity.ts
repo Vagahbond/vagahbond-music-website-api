@@ -30,7 +30,7 @@ export class Event extends BaseEntity {
 
   @ApiProperty()
   @Column({ 
-    name: "booking_method",
+    name: "booking-method",
     type: 'enum',
     enum: BookingMethod,
     default: BookingMethod.FREE,

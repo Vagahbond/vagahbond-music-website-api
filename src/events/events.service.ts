@@ -80,7 +80,7 @@ export class EventsService {
     const event = await this.eventsRepository.findOne(eventIdObject);
 
     if (!event) {
-      throw new NotFoundException();
+      throw new NotFoundException('This event does not exist');
     }
 
     this.minioClientService.delete(event.pictureFilename);

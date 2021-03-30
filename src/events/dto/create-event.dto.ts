@@ -9,7 +9,13 @@ export class CreateEventDTO {
   @ApiProperty()
   name: string;
 
-  @IsEnum(BookingMethod, { message: `bookingMethod must be one of these: ${Object.values(BookingMethod).map(str => str.toString())}` })
+  @IsEnum(
+    BookingMethod, 
+    { 
+      message: `bookingMethod must be one of these: ${
+        Object.values(BookingMethod).map(str => str.toString())
+      }.` 
+    })
   @ApiProperty({ examples: Object.values(BookingMethod).map(str => str.toString()) })
   bookingMethod: BookingMethod;
 
