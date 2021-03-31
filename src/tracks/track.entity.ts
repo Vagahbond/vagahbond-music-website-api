@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { StreamingLink } from 'src/streaming-link/streaming-link-entity';
 import { 
   BaseEntity, 
   Column, 
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn, 
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 
 @Entity('tracks')
@@ -24,16 +26,8 @@ export class Track extends BaseEntity {
   name: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: '64', nullable: true })
-  soundCloudLink: string;
-
-  @ApiProperty()
-  @Column({ type: 'varchar', length: '64', nullable: true })
-  youTubeLink: string;
-
-  @ApiProperty()
-  @Column({ type: 'varchar', length: '64', nullable: true })
-  soundHiveLink: string;
+  @OneToMany(() => StreamingLink, streamingLink => streamingLink.track)
+  streamingLinks: StreamingLink[];
 
   @ApiProperty()
   @Column({ type: "varchar", length: '128'})
