@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Track } from "src/tracks/track.entity";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { StreamingPlatform } from "./streaming-platforms-enum";
+import { StreamingPlatform } from "./streaming-platforms.enum";
 
 @Entity('streaming-links')
 export class StreamingLink extends BaseEntity {

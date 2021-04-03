@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
 import { FindStreamingLinkDTO } from "./dto/find-streaming-link.dto";
 import { InsertStreamingLinkDTO } from "./dto/insert-streaming-link.dto";
-import { StreamingLink } from "./streaming-link-entity";
+import { StreamingLink } from "./streaming-link.entity";
 
 @Injectable()
 export class StreamingLinkService {

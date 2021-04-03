@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { StreamingLink } from 'src/streaming-link/streaming-link-entity';
+import { StreamingLink } from 'src/streaming-link/streaming-link.entity';
 import { 
   BaseEntity, 
   Column, 

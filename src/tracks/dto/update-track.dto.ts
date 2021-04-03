@@ -8,23 +8,4 @@ export class UpdateTrackDTO {
   @IsString()
   @ApiPropertyOptional()
   name: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @ApiPropertyOptional()
-  soundCloudLink: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @ApiPropertyOptional()
-  youTubeLink: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @IsString()
-  @ApiPropertyOptional()
-  soundHiveLink: string;
-
 }

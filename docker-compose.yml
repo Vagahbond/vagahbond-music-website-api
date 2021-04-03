@@ -25,7 +25,7 @@ services:
     depends_on:
       - db
       - minio
-    command: sh -c "npm run db:migrate && exec npm run start:dev"
+    command: sh -c "exec npm run start:dev"
 
   db:
     image: postgres:13.1-alpine

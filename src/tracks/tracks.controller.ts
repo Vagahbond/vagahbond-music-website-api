@@ -72,13 +72,8 @@ export class TracksController {
     if (!trackFile) {
       throw new BadRequestException('missing trackFile');
     }
-
-    const track = await this.tracksService.create(
-      {
-        ...createTrackDTO,
-      },
-      trackFile,
-    );
+ 
+    const track = await this.tracksService.create(createTrackDTO,trackFile,);
 
     return {
       message: "Track successfully created",
