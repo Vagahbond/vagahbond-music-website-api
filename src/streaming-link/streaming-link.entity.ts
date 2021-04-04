@@ -3,7 +3,7 @@ import { Track } from "src/tracks/track.entity";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { StreamingPlatform } from "./streaming-platforms.enum";
 
-@Entity('streaming-links')
+@Entity('streaming_links')
 export class StreamingLink extends BaseEntity {
   constructor(partial: Partial<StreamingLink>) {
     super();
@@ -15,7 +15,7 @@ export class StreamingLink extends BaseEntity {
   id: string;
 
   @ApiProperty()
-  @Column({type: 'varchar', length: '128'})
+  @Column({ type: 'varchar', length: '128' })
   url: string;
 
   @ApiProperty()
@@ -26,7 +26,10 @@ export class StreamingLink extends BaseEntity {
   })
   platform: StreamingPlatform
 
-  @ApiProperty()
-  @ManyToOne(() => Track, track => track.streamingLinks)
-    track: Track;
+  @ApiProperty({ type: () => Track })
+  @ManyToOne(() => Track, track => track.streamingLinks, { nullable: false })
+  // @JoinColumn(
+  //   { name: 'trackId', referencedColumnName: 'id'},
+  // )
+  track: Track;
 }

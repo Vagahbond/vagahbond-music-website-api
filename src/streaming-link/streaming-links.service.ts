@@ -9,14 +9,13 @@ import { StreamingLink } from "./streaming-link.entity";
 export class StreamingLinkService {
   constructor(
     @InjectRepository(StreamingLink)
-    private streamingRepository: Repository<StreamingLink>
-  ) {}
+    private readonly streamingRepository: Repository<StreamingLink>,
+    ) {}
 
   async create(
     insertStreamingLinkDTO: InsertStreamingLinkDTO,
-  ): Promise<StreamingLink> {
-    const streamingLink = new StreamingLink(insertStreamingLinkDTO)
-    return this.streamingRepository.save(streamingLink);
+  ): Promise<StreamingLink> {    
+    return this.streamingRepository.save(insertStreamingLinkDTO);
   }
 
   async delete(streamingLinkIdObject: FindStreamingLinkDTO): Promise<DeleteResult> {

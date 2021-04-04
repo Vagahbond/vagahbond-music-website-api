@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { InsertStreamingLinkDTO } from "src/streaming-link/dto/insert-streaming-link.dto";
 
 export class UpdateTrackDTO {
 
@@ -7,5 +8,11 @@ export class UpdateTrackDTO {
   @IsNotEmpty()
   @IsString()
   @ApiPropertyOptional()
-  name: string;
+  name?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsNotEmpty()
+  @ApiPropertyOptional()
+  streamingLinks?: InsertStreamingLinkDTO[]
 }

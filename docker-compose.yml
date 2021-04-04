@@ -55,7 +55,7 @@ services:
       - 9001:9000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-    restart: always
+    # restart: always
     networks: 
       - backend
 
