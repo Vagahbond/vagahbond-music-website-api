@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, Length } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID, Length } from "class-validator";
 
 export class CreateTrackDTO {
 
@@ -7,5 +7,10 @@ export class CreateTrackDTO {
   @Length(1, 64)
   @ApiProperty()
   readonly name: string;
+
+  @IsNotEmpty()
+  @IsUUID('all')
+  @ApiProperty({ description: "release ID" })
+  release: string;
 
 }
