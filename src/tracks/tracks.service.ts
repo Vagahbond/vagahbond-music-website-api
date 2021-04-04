@@ -13,7 +13,7 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { FindTrackDTO } from "./dto/find-track.dto";
 import { UpdateTrackDTO } from "./dto/update-track.dto";
-
+import { FindByTrackDTO } from "./dto/find-by-track.dto";
 @Injectable()
 export class TracksService {
   constructor(
@@ -27,6 +27,7 @@ export class TracksService {
     audioFile: BufferedFile,
   ): Promise<Track> {
     const track = new Track(insertTrackDTO)
+
     track.audioFileName = await this.uploadTrackFile(audioFile)
 
     return this.tracksRepository.save(track);
@@ -40,7 +41,7 @@ export class TracksService {
     return this.tracksRepository.findOne({ id: track.id })
   }
 
-  async findBy(params: UpdateTrackDTO): Promise<Track[]> {
+  async findBy(params: FindByTrackDTO): Promise<Track[]> {
     return this.tracksRepository.find(params);
   }
 
@@ -49,14 +50,15 @@ export class TracksService {
     updateTrackDTO: UpdateTrackDTO,
     existingTrack: Track,
     audioFile?: BufferedFile): Promise<UpdateResult> {
+
     if (audioFile) {
-      const audioFileName = await this.uploadTrackFile(audioFile);
-      this.minioClientService.delete(existingTrack.audioFileName);
-      return this.tracksRepository.update(
-        trackIdObject,
-        { ...updateTrackDTO, audioFileName }
-      );
-    }
+        const audioFileName = await this.uploadTrackFile(audioFile);
+        this.minioClientService.delete(existingTrack.audioFileName);
+        return this.tracksRepository.update(
+          trackIdObject,
+          { ...updateTrackDTO, audioFileName }
+        );
+      }
     return this.tracksRepository.update(trackIdObject, updateTrackDTO)
   }
 
@@ -79,7 +81,7 @@ export class TracksService {
   }
 
   async uploadTrackFile(file: BufferedFile): Promise<string> {
-    
+
     if (!Object.values(AudioFileMediaTypes).map(name => name.toString()).includes(file.mimetype)) {
       throw new BadRequestException(
         `Invalid audio file media type ${file.mimetype}`,

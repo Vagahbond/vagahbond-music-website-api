@@ -8,6 +8,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { TracksModule } from './tracks/tracks-module.dto';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { StreamingLinksModule } from './streaming-link/streaming-links.module';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -21,6 +22,7 @@ export function DatabaseOrmModule(): DynamicModule {
     ConfigModule.forRoot(),
     EventsModule,
     TracksModule,
+    StreamingLinksModule,
     TypeOrmModule.forRoot(ormconfig),
     LoggerModule.forRoot({
       pinoHttp: {
