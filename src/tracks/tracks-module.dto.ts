@@ -12,5 +12,6 @@ import { TracksService } from "./tracks.service";
   ],
   controllers: [TracksController],
   providers: [TracksService],
+  exports: [TracksService]
 })
 export class TracksModule{}

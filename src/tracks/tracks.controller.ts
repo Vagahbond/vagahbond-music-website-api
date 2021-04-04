@@ -44,7 +44,6 @@ import { UnauthorizedResponse } from "src/auth/unauthorized-response"
 import { AuthGuard } from "@nestjs/passport";
 import AffectedResponse from "src/common/dto/affected-response.dto";
 import { NotEmptyPipe } from "src/common/pipes/not-empty-pipe";
-
 @Controller('tracks')
 export class TracksController {
   constructor(
@@ -72,13 +71,8 @@ export class TracksController {
     if (!trackFile) {
       throw new BadRequestException('missing trackFile');
     }
-
-    const track = await this.tracksService.create(
-      {
-        ...createTrackDTO,
-      },
-      trackFile,
-    );
+ 
+    const track = await this.tracksService.create(createTrackDTO,trackFile,);
 
     return {
       message: "Track successfully created",
