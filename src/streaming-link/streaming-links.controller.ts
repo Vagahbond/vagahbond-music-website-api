@@ -38,11 +38,6 @@ export class StreamingLinkController {
       throw new NotFoundException('This track does not exist.')
     }
 
-    this.tracksService.update(
-      { id: track.id }, 
-      { streamingLinks: [{  ...createStreamingLinkDTO, track: track,},]}, 
-      track)
-
     const link = this.streamingLinkService.create(
       {
         ...createStreamingLinkDTO,

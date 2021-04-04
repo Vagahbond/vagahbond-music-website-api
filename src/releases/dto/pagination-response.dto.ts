@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Pagination } from "nestjs-typeorm-paginate";
+import { Pagination } from "src/common/dto/pagination.dto";
 import { Release } from "../release.entity";
 
 export class ReleasePagination extends Pagination {

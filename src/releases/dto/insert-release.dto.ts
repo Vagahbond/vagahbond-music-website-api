@@ -1,7 +1,5 @@
-import { Release } from "../release.entity";
-
-export class InsertReleaseDTP {
+export class InsertReleaseDTO {
   name: string;
 
-  releaseDate: Release
+  releaseDate: Date
 }
