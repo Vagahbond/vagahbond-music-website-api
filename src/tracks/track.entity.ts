@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Release } from 'src/releases/release.entity';
 import { StreamingLink } from 'src/streaming-link/streaming-link.entity';
 import {
   BaseEntity,
@@ -8,7 +9,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  JoinColumn
+  JoinColumn,
+  ManyToOne
 } from 'typeorm';
 
 @Entity('tracks')
@@ -28,12 +30,20 @@ export class Track extends BaseEntity {
 
   @ApiProperty({ type: () => StreamingLink })
   @OneToMany(
-    (type) => StreamingLink,
+    () => StreamingLink,
     streamingLink => streamingLink.track,
     { eager: true }
   )
   @JoinColumn()
   streamingLinks: StreamingLink[];
+
+  @ApiProperty()
+  @ManyToOne(
+    () => Release,
+    release => release.tracks,
+    { nullable: false }
+  )
+  release: Release;
 
   @ApiProperty()
   @Column({ type: "varchar", length: '128' })
