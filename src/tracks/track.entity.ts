@@ -9,7 +9,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  JoinColumn
+  JoinColumn,
+  ManyToOne
 } from 'typeorm';
 
 @Entity('tracks')
@@ -37,9 +38,10 @@ export class Track extends BaseEntity {
   streamingLinks: StreamingLink[];
 
   @ApiProperty()
-  @OneToMany(
+  @ManyToOne(
     () => Release,
-    release => release.tracks
+    release => release.tracks,
+    { nullable: false }
   )
   release: Release;
 

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Track } from "src/tracks/track.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('releases')
 export class Release extends BaseEntity {
@@ -22,10 +22,10 @@ export class Release extends BaseEntity {
   coverFileName: string;
 
   @ApiProperty()
-  @ManyToOne(
+  @OneToMany(
     () => Track,
     track => track.release,
-    { eager: true }
+    { eager: true, nullable: false }
   )
   tracks: Track[];
 

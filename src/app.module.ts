@@ -9,6 +9,7 @@ import { TracksModule } from './tracks/tracks-module.dto';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { StreamingLinksModule } from './streaming-link/streaming-links.module';
+import { ReleaseModule } from './releases/releases.module';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -23,6 +24,7 @@ export function DatabaseOrmModule(): DynamicModule {
     EventsModule,
     TracksModule,
     StreamingLinksModule,
+    ReleaseModule,
     TypeOrmModule.forRoot(ormconfig),
     LoggerModule.forRoot({
       pinoHttp: {

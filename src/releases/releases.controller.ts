@@ -19,7 +19,7 @@ import { NotEmptyPipe } from "src/common/pipes/not-empty-pipe";
 import { UpdateReleaseDTO } from "./dto/update-release.dto";
 import { DeleteDateColumn, UpdateResult } from "typeorm";
 
-@Controller('release')
+@Controller('releases')
 export class ReleaseController {
   constructor(
     private readonly releasesService: ReleasesService
@@ -48,14 +48,17 @@ export class ReleaseController {
     }
 
 
-    const track = await this.releasesService.create(
-      createReleaseDTO,
+    const release = await this.releasesService.create(
+      {
+        ...createReleaseDTO,
+        tracks: []
+      },
       coverFile,
     );
 
     return {
       message: "Release successfully created",
-      url: `/release/${track.id}`
+      url: `/releases/${release.id}`
     };
   }
 
@@ -96,7 +99,7 @@ export class ReleaseController {
   @ApiOperation({ summary: 'Update a release' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateReleaseAPIBody })
-  @ApiOkResponse({ type: () => Release, description: 'Track object' })
+  @ApiOkResponse({ type: () => Release, description: 'Release object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
     description: 'Invalid input',
