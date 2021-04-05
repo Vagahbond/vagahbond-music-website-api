@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, Length } from "class-validator";
+import { IsDateString, IsString, Length } from "class-validator";
 
 export class CreateReleaseDTO {
 
@@ -8,7 +8,7 @@ export class CreateReleaseDTO {
   @ApiProperty()
   name: string;
 
-  @IsDate()
+  @IsDateString({ message: 'releaseDate must be Date formatted following ISO8601!'})
   @ApiProperty()
   releaseDate: Date;
 }

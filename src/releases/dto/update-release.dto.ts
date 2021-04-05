@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsDate, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDateString, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class UpdateReleaseDTO {
 
@@ -11,7 +11,7 @@ export class UpdateReleaseDTO {
 
   @IsOptional()
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString({ message: 'releaseDate must be Date formatted following ISO8601!'})
   @ApiPropertyOptional()
   releaseDate?: Date
 }

@@ -84,6 +84,7 @@ export class TracksController {
     const track = await this.tracksService.create(
       {
         ...createTrackDTO, 
+        streamingLinks: [],
         release,
       },
       trackFile,
