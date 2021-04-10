@@ -5,5 +5,4 @@ export enum StreamingPlatform {
   BANDCAMP = 'Bandcamp',
   SPOTIFY = 'Spotify',
   DEEZER = 'Deezer',
-
 }

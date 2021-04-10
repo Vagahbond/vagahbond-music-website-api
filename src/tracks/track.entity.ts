@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   JoinColumn,
-  ManyToOne
+  ManyToOne,
 } from 'typeorm';
 
 @Entity('tracks')
@@ -29,24 +29,21 @@ export class Track extends BaseEntity {
   name: string;
 
   @ApiProperty({ type: () => StreamingLink })
-  @OneToMany(
-    () => StreamingLink,
-    streamingLink => streamingLink.track,
-    { eager: true }
-  )
+  @OneToMany(() => StreamingLink, (streamingLink) => streamingLink.track, {
+    eager: true,
+  })
   @JoinColumn()
   streamingLinks: StreamingLink[];
 
-  @ApiProperty()
+  @ApiProperty({ type: () => Release })
   @ManyToOne(
-    () => Release,
-    release => release.tracks,
-    { nullable: false }
-  )
+    () => Release, 
+    (release) => release.tracks, 
+    { nullable: false })
   release: Release;
 
   @ApiProperty()
-  @Column({ type: "varchar", length: '128' })
+  @Column({ type: 'varchar', length: '128' })
   audioFileName: string;
 
   @ApiProperty()
@@ -56,5 +53,4 @@ export class Track extends BaseEntity {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
-
 }

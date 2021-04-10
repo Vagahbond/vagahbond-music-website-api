@@ -1,6 +1,14 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Track } from "src/tracks/track.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { ApiProperty } from '@nestjs/swagger';
+import { Track } from 'src/tracks/track.entity';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('releases')
 export class Release extends BaseEntity {
@@ -11,26 +19,27 @@ export class Release extends BaseEntity {
 
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: '64'})
-  name:string
+  @Column({ type: 'varchar', length: '64' })
+  name: string;
 
   @ApiProperty()
-  @Column({ type: 'varchar', length: '128'})
+  @Column({ type: 'varchar', length: '128' })
   coverFileName: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => Track })
   @OneToMany(
-    () => Track,
-    track => track.release,
-    { eager: true, nullable: false }
-  )
+    () => Track, 
+    (track) => track.release, {
+    eager: true,
+    nullable: false,
+  })
   tracks: Track[];
 
   @ApiProperty()
-  @Column({ type: 'date'})
+  @Column({ type: 'date' })
   releaseDate: Date;
 
   @ApiProperty()

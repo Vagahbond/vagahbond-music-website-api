@@ -6,9 +6,9 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @ApiOperation({ summary: "Default API message"})
+  @ApiOperation({ summary: 'Default API message' })
   @ApiOkResponse({
-    description: "Default API message"
+    description: 'Default API message',
   })
   @Get()
   getHello(): string {

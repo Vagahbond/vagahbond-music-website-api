@@ -1,7 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Track } from "src/tracks/track.entity";
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { StreamingPlatform } from "./streaming-platforms.enum";
+import { ApiProperty } from '@nestjs/swagger';
+import { Track } from 'src/tracks/track.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { StreamingPlatform } from './streaming-platforms.enum';
 
 @Entity('streaming_links')
 export class StreamingLink extends BaseEntity {
@@ -22,12 +28,12 @@ export class StreamingLink extends BaseEntity {
   @Column({
     name: 'streaming-platform',
     type: 'enum',
-    enum: StreamingPlatform
+    enum: StreamingPlatform,
   })
-  platform: StreamingPlatform
+  platform: StreamingPlatform;
 
   @ApiProperty({ type: () => Track })
-  @ManyToOne(() => Track, track => track.streamingLinks, { nullable: false })
+  @ManyToOne(() => Track, (track) => track.streamingLinks, { nullable: false })
   // @JoinColumn(
   //   { name: 'trackId', referencedColumnName: 'id'},
   // )

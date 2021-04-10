@@ -1,17 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BookingMethod } from './booking-method-enum'
-import { 
-  BaseEntity, 
-  Column, 
+import {
+  BaseEntity,
+  Column,
   Entity,
   PrimaryGeneratedColumn,
-  CreateDateColumn, 
-  UpdateDateColumn
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { IsOptional } from 'class-validator';
-
-
-
+import { BookingMethod } from './booking-method-enum';
 
 @Entity('events')
 export class Event extends BaseEntity {
@@ -29,8 +26,8 @@ export class Event extends BaseEntity {
   name: string;
 
   @ApiProperty()
-  @Column({ 
-    name: "booking-method",
+  @Column({
+    name: 'booking-method',
     type: 'enum',
     enum: BookingMethod,
     default: BookingMethod.FREE,
@@ -38,7 +35,7 @@ export class Event extends BaseEntity {
   bookingMethod: BookingMethod;
 
   @ApiProperty()
-  @Column({length: '256', nullable: true })
+  @Column({ length: '256', nullable: true })
   @IsOptional()
   bookingUrl?: string;
 
@@ -47,11 +44,11 @@ export class Event extends BaseEntity {
   eventDate: Date;
 
   @ApiProperty()
-  @Column({ length: '256'})
+  @Column({ length: '256' })
   pictureFilename: string;
 
   @ApiProperty()
-  @Column({ length: '32'})
+  @Column({ length: '32' })
   location: string;
 
   @ApiProperty()

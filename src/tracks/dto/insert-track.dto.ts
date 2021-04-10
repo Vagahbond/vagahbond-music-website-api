@@ -1,10 +1,10 @@
-import { Release } from "src/releases/release.entity";
-import { StreamingLink } from "src/streaming-link/streaming-link.entity";
+import { Release } from 'src/releases/release.entity';
+import { StreamingLink } from 'src/streaming-link/streaming-link.entity';
 
 export class InsertTrackDTO {
   name: string;
 
-  release: Release
+  release: Release;
 
-  streamingLinks: StreamingLink[]
+  streamingLinks: StreamingLink[];
 }

@@ -1,5 +1,5 @@
 export enum BookingMethod {
   ONLINE = 'online',
-  FREE = 'free', 
+  FREE = 'free',
   LOCALLY = 'locally',
 }
