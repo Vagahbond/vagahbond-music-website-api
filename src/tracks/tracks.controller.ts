@@ -15,9 +15,9 @@ import {
   Query,
   UploadedFile,
   UseGuards,
-  UseInterceptors
-} from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -26,32 +26,32 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiParam,
-  ApiUnauthorizedResponse
-} from "@nestjs/swagger";
-import { BufferedFile } from "src/minio-client/file.model";
-import { BadRequestResponse } from "src/common/dto/bad-request-response.dto";
-import { PaginationQuery } from "src/common/dto/pagination-query.dto";
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { BadRequestResponse } from 'src/common/dto/bad-request-response.dto';
+import { PaginationQuery } from 'src/common/dto/pagination-query.dto';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { CreateTrackDTO } from "./dto/create-track.dto";
-import { TrackPagination } from "./dto/pagination-response.dto";
-import { Track } from "./track.entity";
-import { TracksService } from "./tracks.service";
-import { UpdateTrackAPIBody } from "./dto/update-track-api-body.dto";
-import { FindTrackDTO } from "./dto/find-track.dto";
-import { UpdateTrackDTO } from "./dto/update-track.dto";
-import { UpdateResult } from "typeorm";
-import { CreateTrackAPIBody } from "./dto/create-track-api-body.dto";
-import { UnauthorizedResponse } from "src/auth/unauthorized-response"
-import { AuthGuard } from "@nestjs/passport";
-import AffectedResponse from "src/common/dto/affected-response.dto";
-import { NotEmptyPipe } from "src/common/pipes/not-empty-pipe";
-import { ReleasesService } from "src/releases/releases.service";
+import { UpdateResult } from 'typeorm';
+import { UnauthorizedResponse } from 'src/auth/unauthorized-response';
+import { AuthGuard } from '@nestjs/passport';
+import AffectedResponse from 'src/common/dto/affected-response.dto';
+import { NotEmptyPipe } from 'src/common/pipes/not-empty-pipe';
+import { ReleasesService } from 'src/releases/releases.service';
+import { CreateTrackDTO } from './dto/create-track.dto';
+import { TrackPagination } from './dto/pagination-response.dto';
+import { Track } from './track.entity';
+import { TracksService } from './tracks.service';
+import { UpdateTrackAPIBody } from './dto/update-track-api-body.dto';
+import { FindTrackDTO } from './dto/find-track.dto';
+import { UpdateTrackDTO } from './dto/update-track.dto';
+import { CreateTrackAPIBody } from './dto/create-track-api-body.dto';
 @Controller('tracks')
 export class TracksController {
   constructor(
     private readonly tracksService: TracksService,
     private readonly releaseService: ReleasesService,
-  ) { }
+  ) {}
 
   @ApiOperation({ summary: 'Post a track' })
   @ApiConsumes('multipart/form-data')
@@ -75,15 +75,17 @@ export class TracksController {
       throw new BadRequestException('missing trackFile');
     }
 
-    const release = await this.releaseService.findOne({ id: createTrackDTO.release })
+    const release = await this.releaseService.findOne({
+      id: createTrackDTO.release,
+    });
 
     if (!release) {
-      throw new NotFoundException('This release does not exist.')
+      throw new NotFoundException('This release does not exist.');
     }
 
     const track = await this.tracksService.create(
       {
-        ...createTrackDTO, 
+        ...createTrackDTO,
         streamingLinks: [],
         release,
       },
@@ -91,8 +93,8 @@ export class TracksController {
     );
 
     return {
-      message: "Track successfully created",
-      url: `/track/${track.id}`
+      message: 'Track successfully created',
+      url: `/track/${track.id}`,
     };
   }
 
@@ -102,17 +104,15 @@ export class TracksController {
   async find(
     @Query() paginationQuery: PaginationQuery,
   ): Promise<Pagination<Track>> {
-    return this.tracksService.paginate(
-      {
-        page: paginationQuery.page || 1,
-        limit: paginationQuery.limit || 10,
-        route: '/tracks',
-      },
-    );
+    return this.tracksService.paginate({
+      page: paginationQuery.page || 1,
+      limit: paginationQuery.limit || 10,
+      route: '/tracks',
+    });
   }
 
   @ApiOperation({ summary: 'Get a track' })
-  @ApiOkResponse({ type: Track, description: "Track object" })
+  @ApiOkResponse({ type: Track, description: 'Track object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
     description: 'Invalid input',
@@ -120,11 +120,10 @@ export class TracksController {
   @ApiParam({ name: 'id', type: FindTrackDTO, required: true })
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Track> {
-
     const track: Track | undefined = await this.tracksService.findOne({ id });
 
     if (!track) {
-      throw new NotFoundException("This track does not exist");;
+      throw new NotFoundException('This track does not exist');
     }
 
     return track;
@@ -140,7 +139,7 @@ export class TracksController {
   })
   @ApiUnauthorizedResponse({
     type: UnauthorizedResponse,
-    description: 'Invalid token'
+    description: 'Invalid token',
   })
   @ApiParam({ name: 'id', type: FindTrackDTO, required: true })
   @UseInterceptors(FileInterceptor('trackFile'))
@@ -154,7 +153,7 @@ export class TracksController {
     const existingTrack = await this.tracksService.findOne({ id });
 
     if (!existingTrack) {
-      throw new NotFoundException('Could not find track')
+      throw new NotFoundException('Could not find track');
     }
 
     const result: UpdateResult = await this.tracksService.update(
@@ -162,15 +161,18 @@ export class TracksController {
       trackData,
       existingTrack,
       trackFile,
-    )
+    );
 
     if (!result.affected || result.affected < 1) {
-      throw new HttpException('There was nothing to update', HttpStatus.NOT_ACCEPTABLE)
+      throw new HttpException(
+        'There was nothing to update',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
 
     return {
-      message: "Track successfully modified.",
-      url: `/tracks/${id}`
+      message: 'Track successfully modified.',
+      url: `/tracks/${id}`,
     };
   }
 
@@ -187,9 +189,7 @@ export class TracksController {
   @ApiParam({ name: 'id', type: FindTrackDTO, required: true })
   @HttpCode(204)
   @Delete(':id')
-  async delete(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.tracksService.delete({ id });
   }
 }

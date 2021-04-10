@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { ImageFileMediaTypes } from "src/media-types";
-import { BufferedFile } from "src/minio-client/file.model";
-import { CreateReleaseDTO } from "./create-release.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { ImageFileMediaTypes } from 'src/media-types';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { CreateReleaseDTO } from './create-release.dto';
 
 export class CreateReleaseApiBody extends CreateReleaseDTO {
   @ApiProperty({
@@ -10,7 +10,7 @@ export class CreateReleaseApiBody extends CreateReleaseDTO {
       Object.values(ImageFileMediaTypes).filter(
         (value) => typeof value === 'string',
       ) as string[]
-    }`
+    }`,
   })
-  coverFile: BufferedFile
+  coverFile: BufferedFile;
 }

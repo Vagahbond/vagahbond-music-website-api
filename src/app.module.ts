@@ -1,12 +1,12 @@
-import { Module, DynamicModule} from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from 'nestjs-pino';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventsModule } from './events/events-module';
 import * as ormconfig from './ormconfig';
-import { LoggerModule } from 'nestjs-pino';
 import { TracksModule } from './tracks/tracks-module.dto';
-import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { StreamingLinksModule } from './streaming-link/streaming-links.module';
 import { ReleaseModule } from './releases/releases.module';
@@ -33,7 +33,6 @@ export function DatabaseOrmModule(): DynamicModule {
       },
     }),
     AuthModule,
-
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,15 +1,12 @@
-import {  Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { MinioClientModule } from "src/minio-client/minio-client.module";
-import { EventsController } from "./events.controller";
-import { Event } from "./events.entity";
-import { EventsService } from "./events.service";
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MinioClientModule } from 'src/minio-client/minio-client.module';
+import { EventsController } from './events.controller';
+import { Event } from './events.entity';
+import { EventsService } from './events.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Event]),
-    MinioClientModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Event]), MinioClientModule],
   controllers: [EventsController],
   providers: [EventsService],
   exports: [EventsService],

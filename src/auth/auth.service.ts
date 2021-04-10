@@ -1,15 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { ApiConstants } from "./api-constants"
+import { Injectable } from '@nestjs/common';
+import { ApiConstants } from './api-constants';
 @Injectable()
 export class AuthService {
-
-
   validateApiKey(key: string): any {
     if (ApiConstants.API_KEY === key) {
-      return true
+      return true;
     }
     return false;
   }
-  
-
 }

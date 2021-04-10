@@ -14,7 +14,7 @@ export class MinioClientService {
   private readonly baseBucket = config.MINIO_BUCKET;
 
   public get client(): Minio.Client {
-    return  this.minioService.client;
+    return this.minioService.client;
   }
 
   public async upload(

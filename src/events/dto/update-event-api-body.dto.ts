@@ -1,7 +1,7 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { ImageFileMediaTypes } from "src/media-types";
-import { BufferedFile } from "src/minio-client/file.model";
-import { UpdateEventDTO } from "./update-event.dto";
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ImageFileMediaTypes } from 'src/media-types';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { UpdateEventDTO } from './update-event.dto';
 
 export class UpdateEventAPIBody extends UpdateEventDTO {
   @ApiPropertyOptional({

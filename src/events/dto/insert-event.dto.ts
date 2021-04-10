@@ -1,4 +1,4 @@
-import { BookingMethod } from '../booking-method-enum'
+import { BookingMethod } from '../booking-method-enum';
 
 export class InsertEventDTO {
   name: string;
@@ -10,7 +10,6 @@ export class InsertEventDTO {
   eventDate: Date;
 
   location: string;
-
 }
 
-export { BookingMethod }
+export { BookingMethod };
