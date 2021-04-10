@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
 import * as Minio from 'minio';
 import * as crypto from 'crypto';
@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { config } from './config';
 import { BufferedFile } from './file.model';
+import { MediaTypeEnum } from '../media-types'
 
 @Injectable()
 export class MinioClientService {
@@ -18,7 +19,7 @@ export class MinioClientService {
     return this.minioService.client;
   }
 
-  public async upload(
+  private async upload(
     file: BufferedFile,
     subFolder: string,
   ): Promise<{ path: string }> {
@@ -85,5 +86,25 @@ export class MinioClientService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  public async uploadFile(
+    file: BufferedFile, 
+    mediaSubType: MediaTypeEnum,
+    subFolder: string
+    ): Promise<string> {
+    if (
+      !Object.values(mediaSubType)
+        .map((name: string): string => name)
+        .includes(file.mimetype)
+    ) {
+      throw new BadRequestException(
+        `Invalid file media type: ${file.mimetype}`,
+      );
+    }
+
+    const uploadedFile = await this.upload(file, subFolder);
+
+    return uploadedFile.path;
   }
 }
