@@ -33,11 +33,9 @@ export class EventsService {
   ) {}
 
   async create(
-    insertEventDTO: InsertEventDTO,
-    picture: BufferedFile,
+    insertEventDTO: InsertEventDTO
   ): Promise<Event> {
     const event = new Event(insertEventDTO);
-    event.pictureFilename = await this.uploadEventPicture(picture);
 
     return this.eventsRepository.save(event);
   }

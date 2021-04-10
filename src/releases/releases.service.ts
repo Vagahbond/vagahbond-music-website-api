@@ -91,21 +91,4 @@ export class ReleasesService {
     return this.releaseRepository.delete(release.id);
   }
 
-  async uploadReleasePicture(file: BufferedFile): Promise<string> {
-    if (
-      !Object.values(ImageFileMediaTypes)
-        .map((name) => name.toString())
-        .includes(file.mimetype)
-    ) {
-      throw new BadRequestException(
-        `Invalid picture file media type: ${file.mimetype}`,
-      );
-    }
-
-    const subFolder = 'events';
-
-    const uploadedImage = await this.minioClientService.upload(file, subFolder);
-
-    return uploadedImage.path;
-  }
 }

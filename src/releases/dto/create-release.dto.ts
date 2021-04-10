@@ -5,11 +5,11 @@ export class CreateReleaseDTO {
   @IsString()
   @Length(1, 64)
   @ApiProperty()
-  name: string;
+  readonly name: string;
 
   @IsDateString({
     message: 'releaseDate must be Date formatted following ISO8601!',
   })
   @ApiProperty()
-  releaseDate: Date;
+  readonly releaseDate: Date;
 }
