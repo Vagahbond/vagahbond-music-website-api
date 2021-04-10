@@ -36,10 +36,7 @@ export class Track extends BaseEntity {
   streamingLinks: StreamingLink[];
 
   @ApiProperty({ type: () => Release })
-  @ManyToOne(
-    () => Release, 
-    (release) => release.tracks, 
-    { nullable: false })
+  @ManyToOne(() => Release, (release) => release.tracks, { nullable: false })
   release: Release;
 
   @ApiProperty()

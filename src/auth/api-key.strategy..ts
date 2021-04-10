@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { HeaderAPIKeyStrategy } from 'passport-headerapikey';
@@ -12,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(HeaderAPIKeyStrategy) {
         prefix: '',
       },
       true,
-      (apiKey: string, done: any, req: Request, next: () => void) => {
+      (apiKey: string, done: any, req: Request, next: () => void): any => {
         if (!this.authService.validateApiKey(apiKey)) {
           return done(
             new UnauthorizedException(

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
 import * as Minio from 'minio';
@@ -43,7 +44,7 @@ export class MinioClientService {
         file.buffer,
         metaData,
       );
-    } catch (e) {
+    } catch (e: any) {
       throw new HttpException(
         `Error uploading file: ${e.code}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -57,7 +58,7 @@ export class MinioClientService {
 
   delete(objetName: string, baseBucket: string = this.baseBucket): void {
     try {
-      this.client.removeObject(baseBucket, objetName);
+      void this.client.removeObject(baseBucket, objetName);
     } catch {
       throw new HttpException(
         'Error deleting file',

@@ -1,0 +1,6 @@
+# Ignore migrations
+src/migrations
+
+# Test (will they ever get written lol)
+test
+
