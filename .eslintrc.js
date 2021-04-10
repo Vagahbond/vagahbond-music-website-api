@@ -24,5 +24,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'import/prefer-default-export': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
+    'no-void':  ["error", { "allowAsStatement": true }]
   },
 };

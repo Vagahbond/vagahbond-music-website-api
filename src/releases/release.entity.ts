@@ -30,9 +30,7 @@ export class Release extends BaseEntity {
   coverFileName: string;
 
   @ApiProperty({ type: () => Track })
-  @OneToMany(
-    () => Track, 
-    (track) => track.release, {
+  @OneToMany(() => Track, (track) => track.release, {
     eager: true,
     nullable: false,
   })

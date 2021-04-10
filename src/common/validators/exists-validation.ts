@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-param-reassign */
 /* eslint-disable func-names */
@@ -17,7 +19,7 @@ import { getManager } from 'typeorm';
 @ValidatorConstraint({ async: true })
 export class ExistsInDatabaseExistConstraint
   implements ValidatorConstraintInterface {
-  async validate(value: any, args: ValidationArguments) {
+  async validate(value: any, args: ValidationArguments): Promise<boolean> {
     const entity = args.object[`class_entity_${args.property}`];
     return getManager()
       .count(entity, { [args.property]: value })
