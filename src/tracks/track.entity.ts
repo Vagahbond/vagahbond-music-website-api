@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Release } from 'src/releases/release.entity';
 import { StreamingLink } from 'src/streaming-link/streaming-link.entity';
 import {
@@ -42,6 +42,10 @@ export class Track extends BaseEntity {
   @ApiProperty()
   @Column({ type: 'varchar', length: '128' })
   audioFileName: string;
+
+  @ApiPropertyOptional()
+  @Column({type: 'varchar', length: '512', nullable: true})
+  description?: string;
 
   @ApiProperty()
   @CreateDateColumn()
