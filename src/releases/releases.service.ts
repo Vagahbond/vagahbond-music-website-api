@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -38,7 +37,11 @@ export class ReleasesService {
   ): Promise<Release> {
     const release = new Release(insertReleaseDTO);
 
-    release.coverFileName = await this.uploadReleasePicture(coverFile);
+    release.coverFileName = await this.minioClientService.uploadFile(
+      coverFile,
+      ImageFileMediaTypes,
+      typeof Release
+);
 
     return this.releaseRepository.save(release);
   }
@@ -69,7 +72,7 @@ export class ReleasesService {
     coverfile?: BufferedFile,
   ): Promise<UpdateResult> {
     if (coverfile) {
-      const coverFileName = await this.uploadReleasePicture(coverfile);
+      const coverFileName = await this.minioClientService.uploadFile(coverfile, ImageFileMediaTypes, typeof Release);
       this.minioClientService.delete(existingRelease.coverFileName);
       return this.releaseRepository.update(releaseIdObject, {
         ...updateReleaseDTO,
@@ -91,21 +94,4 @@ export class ReleasesService {
     return this.releaseRepository.delete(release.id);
   }
 
-  async uploadReleasePicture(file: BufferedFile): Promise<string> {
-    if (
-      !Object.values(ImageFileMediaTypes)
-        .map((name) => name.toString())
-        .includes(file.mimetype)
-    ) {
-      throw new BadRequestException(
-        `Invalid picture file media type: ${file.mimetype}`,
-      );
-    }
-
-    const subFolder = 'events';
-
-    const uploadedImage = await this.minioClientService.upload(file, subFolder);
-
-    return uploadedImage.path;
-  }
 }
