@@ -1,8 +1,10 @@
 import {
   IsDateString,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Length,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -40,4 +42,10 @@ export class CreateEventDTO {
   @Length(10, 32)
   @ApiProperty()
   location: string;
+
+  @IsNotEmpty()
+  @IsUUID('all')
+  @ApiProperty({ description: 'tour ID' })
+  readonly tour: string;
 }
+

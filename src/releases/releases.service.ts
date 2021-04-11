@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -38,7 +37,11 @@ export class ReleasesService {
   ): Promise<Release> {
     const release = new Release(insertReleaseDTO);
 
-    release.coverFileName = await this.uploadReleasePicture(coverFile);
+    release.coverFileName = await this.minioClientService.uploadFile(
+      coverFile,
+      ImageFileMediaTypes,
+      typeof Release
+);
 
     return this.releaseRepository.save(release);
   }
@@ -69,7 +72,7 @@ export class ReleasesService {
     coverfile?: BufferedFile,
   ): Promise<UpdateResult> {
     if (coverfile) {
-      const coverFileName = await this.uploadReleasePicture(coverfile);
+      const coverFileName = await this.minioClientService.uploadFile(coverfile, ImageFileMediaTypes, typeof Release);
       this.minioClientService.delete(existingRelease.coverFileName);
       return this.releaseRepository.update(releaseIdObject, {
         ...updateReleaseDTO,
