@@ -4,12 +4,13 @@ import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EventsModule } from './events/events-module';
+import { EventsModule } from './events/events.module';
 import * as ormconfig from './ormconfig';
-import { TracksModule } from './tracks/tracks-module.dto';
+import { TracksModule } from './tracks/tracks.module';
 import { AuthModule } from './auth/auth.module';
 import { StreamingLinksModule } from './streaming-link/streaming-links.module';
 import { ReleaseModule } from './releases/releases.module';
+import { ToursModule } from './tour/tours.module.';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -25,6 +26,7 @@ export function DatabaseOrmModule(): DynamicModule {
     TracksModule,
     StreamingLinksModule,
     ReleaseModule,
+    ToursModule,
     TypeOrmModule.forRoot(ormconfig),
     LoggerModule.forRoot({
       pinoHttp: {

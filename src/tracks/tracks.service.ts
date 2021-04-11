@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -38,7 +37,7 @@ export class TracksService {
   ): Promise<Track> {
     const track = new Track(insertTrackDTO);
 
-    track.audioFileName = await this.uploadTrackFile(audioFile);
+    track.audioFileName = await this.minioClientService.uploadFile(audioFile, AudioFileMediaTypes, typeof Track);
 
     return this.tracksRepository.save(track);
   }
@@ -62,7 +61,11 @@ export class TracksService {
     audioFile?: BufferedFile,
   ): Promise<UpdateResult> {
     if (audioFile) {
-      const audioFileName = await this.uploadTrackFile(audioFile);
+      const audioFileName = await this.minioClientService.uploadFile(
+        audioFile, 
+        AudioFileMediaTypes, 
+        typeof Track
+      );
       this.minioClientService.delete(existingTrack.audioFileName);
       return this.tracksRepository.update(trackIdObject, {
         ...updateTrackDTO,
@@ -88,23 +91,5 @@ export class TracksService {
     searchOptions?: FindConditions<Track> | FindManyOptions<Track>,
   ): Promise<Pagination<Track>> {
     return paginate<Track>(this.tracksRepository, options, searchOptions);
-  }
-
-  async uploadTrackFile(file: BufferedFile): Promise<string> {
-    if (
-      !Object.values(AudioFileMediaTypes)
-        .map((name) => name.toString())
-        .includes(file.mimetype)
-    ) {
-      throw new BadRequestException(
-        `Invalid audio file media type ${file.mimetype}`,
-      );
-    }
-
-    const subFolder = 'tracks';
-
-    const uploadedTrack = await this.minioClientService.upload(file, subFolder);
-
-    return uploadedTrack.path;
   }
 }

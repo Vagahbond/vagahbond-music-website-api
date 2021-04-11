@@ -1,12 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ImageFileMediaTypes } from 'src/media-types';
-import { BufferedFile } from 'src/minio-client/file.model';
-import { MinioClientService } from 'src/minio-client/minio-client.service';
 import {
   DeleteResult,
   Repository,
@@ -29,7 +24,6 @@ export class EventsService {
   constructor(
     @InjectRepository(Event)
     private eventsRepository: Repository<Event>,
-    private minioClientService: MinioClientService,
   ) {}
 
   async create(
@@ -62,48 +56,13 @@ export class EventsService {
   async update(
     eventIdObject: FindEventDTO,
     updateEventDTO: UpdateEventDTO,
-    existingEvent: Event,
-    picture?: BufferedFile,
   ): Promise<UpdateResult> {
-    if (picture) {
-      // upload pic
-      const pictureFilename = await this.uploadEventPicture(picture);
-      this.minioClientService.delete(existingEvent.pictureFilename);
-      return this.eventsRepository.update(eventIdObject, {
-        ...updateEventDTO,
-        pictureFilename,
-      });
-    }
-
     return this.eventsRepository.update(eventIdObject, updateEventDTO);
   }
 
   async delete(eventIdObject: FindEventDTO): Promise<DeleteResult> {
-    const event = await this.eventsRepository.findOne(eventIdObject);
-
-    if (!event) {
-      throw new NotFoundException('This event does not exist');
-    }
-
-    this.minioClientService.delete(event.pictureFilename);
-    return this.eventsRepository.delete(event.id);
+    return this.eventsRepository.delete(eventIdObject.id);
   }
 
-  async uploadEventPicture(file: BufferedFile): Promise<string> {
-    if (
-      !Object.values(ImageFileMediaTypes)
-        .map((name) => name.toString())
-        .includes(file.mimetype)
-    ) {
-      throw new BadRequestException(
-        `Invalid picture file media type: ${file.mimetype}`,
-      );
-    }
 
-    const subFolder = 'events';
-
-    const uploadedImage = await this.minioClientService.upload(file, subFolder);
-
-    return uploadedImage.path;
-  }
 }

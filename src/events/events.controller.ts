@@ -38,22 +38,24 @@ import { NotEmptyPipe } from 'src/common/pipes/not-empty-pipe';
 import AffectedResponse from 'src/common/dto/affected-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UnauthorizedResponse } from 'src/auth/unauthorized-response';
-import { CreateEventAPIBody } from './dto/create-event-api-body.dto';
+import { ToursService } from 'src/tour/tours.service';
 import { CreateEventDTO } from './dto/create-event.dto';
 import { EventPagination } from './dto/pagination-response.dto';
 import { Event } from './events.entity';
 import { EventsService } from './events.service';
 import { FindEventDTO } from './dto/find-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
-import { UpdateEventAPIBody } from './dto/update-event-api-body.dto';
 
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly tourService: ToursService
+    ) {}
 
   @ApiOperation({ summary: 'Post an event' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateEventAPIBody })
+  @ApiBody({ type: CreateEventDTO })
   @ApiCreatedResponse({ type: () => Event, description: 'Event object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
@@ -74,12 +76,18 @@ export class EventsController {
       throw new BadRequestException('Missing picture file');
     }
 
-    const event = await this.eventsService.create(
-      {
-        ...createEventDTO,
-      },
-      pictureFile,
-    );
+    const tour = await this.tourService.findOne({
+      id: createEventDTO.tour
+    })
+
+    if (!tour) { 
+      throw new NotFoundException('This tour does not exist.');
+    }
+
+    const event = await this.eventsService.create({
+      ...createEventDTO,
+      tour
+    });
 
     return {
       message: 'Event successfully created.',
@@ -126,7 +134,7 @@ export class EventsController {
 
   @ApiOperation({ summary: 'Update an event' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: UpdateEventAPIBody })
+  @ApiBody({ type: UpdateEventDTO })
   @ApiOkResponse({ type: () => Event, description: 'Event object' })
   @ApiBadRequestResponse({
     type: BadRequestResponse,
@@ -143,19 +151,11 @@ export class EventsController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(NotEmptyPipe) eventData: UpdateEventDTO,
-    @UploadedFile() pictureFile: BufferedFile,
   ): Promise<AffectedResponse> {
-    const existingEvent = await this.eventsService.findOne({ id });
-
-    if (!existingEvent) {
-      throw new NotFoundException('Could not find event');
-    }
 
     const result: UpdateResult = await this.eventsService.update(
       { id },
       eventData,
-      existingEvent,
-      pictureFile,
     );
 
     // There is always at least one field updated (UpdatedAt)

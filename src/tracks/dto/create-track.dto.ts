@@ -10,5 +10,5 @@ export class CreateTrackDTO {
   @IsNotEmpty()
   @IsUUID('all')
   @ApiProperty({ description: 'release ID' })
-  release: string;
+  readonly release: string;
 }

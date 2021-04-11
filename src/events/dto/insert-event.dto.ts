@@ -1,3 +1,4 @@
+import { Tour } from 'src/tour/tour.entity';
 import { BookingMethod } from '../booking-method-enum';
 
 export class InsertEventDTO {
@@ -10,6 +11,8 @@ export class InsertEventDTO {
   eventDate: Date;
 
   location: string;
+
+  tour: Tour;
 }
 
 export { BookingMethod };
