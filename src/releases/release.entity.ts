@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Track } from 'src/tracks/track.entity';
 import {
   BaseEntity,
@@ -39,6 +39,10 @@ export class Release extends BaseEntity {
   @ApiProperty()
   @Column({ type: 'date' })
   releaseDate: Date;
+
+  @ApiPropertyOptional()
+  @Column({type: 'varchar', length: '512', nullable: true})
+  description?: string;
 
   @ApiProperty()
   @CreateDateColumn()
