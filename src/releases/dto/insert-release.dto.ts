@@ -5,5 +5,7 @@ export class InsertReleaseDTO {
 
   releaseDate: Date;
 
+  description?: string;
+
   tracks: Track[];
 }

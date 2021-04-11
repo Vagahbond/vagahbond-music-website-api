@@ -13,6 +13,12 @@ export class UpdateReleaseDTO {
   @ApiPropertyOptional()
   name?: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiPropertyOptional()
+  readonly description?: string;
+
   @IsOptional()
   @IsNotEmpty()
   @IsDateString({

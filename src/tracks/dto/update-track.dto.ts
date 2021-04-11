@@ -7,4 +7,10 @@ export class UpdateTrackDTO {
   @IsString()
   @ApiPropertyOptional()
   name?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  @ApiPropertyOptional()
+  readonly description?: string;
 }
