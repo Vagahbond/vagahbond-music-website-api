@@ -12,12 +12,9 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    strategy:
-        matrix:
-          os: [macOS-latest, windows-latest, ubuntu-latest]
 
     # The type of runner that the job will run on
-    runs-on:  ${{ matrix.os }}
+    runs-on:  ubuntu-latest
     
     
 
