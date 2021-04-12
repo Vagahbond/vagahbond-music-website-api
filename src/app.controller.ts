@@ -9,15 +9,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @ApiOperation({ summary: 'Default API message' })
-  @ApiOkResponse({
-    description: 'Default API message',
-  })
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
   @ApiOperation({ summary: 'Test your authentication' })
   @ApiOkResponse({
     description: 'You\'re authentified',
