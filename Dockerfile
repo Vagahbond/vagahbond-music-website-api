@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:14-alpine as build
 
 WORKDIR /usr/src/app
 
@@ -8,4 +8,16 @@ RUN npm i
 
 COPY . .
 
-CMD ["npm", "run", "start:dev"]
+RUN npm run prebuild
+
+RUN npm run build
+
+FROM node:14-alpine
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/ ./
+
+
+
+CMD ["npm", "run", "start:prod"]
