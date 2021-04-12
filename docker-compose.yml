@@ -9,7 +9,9 @@ networks:
 
 services:
   api:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - "3031:3000"
     volumes:
