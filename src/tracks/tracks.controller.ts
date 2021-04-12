@@ -186,6 +186,7 @@ export class TracksController {
     type: UnauthorizedResponse,
     description: 'Invalid auth token',
   })
+  @UseGuards(AuthGuard('headerapikey'))
   @ApiParam({ name: 'id', type: FindTrackDTO, required: true })
   @HttpCode(204)
   @Delete(':id')
