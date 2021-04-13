@@ -17,6 +17,8 @@ async function bootstrap(){
     origin: [process.env.CLIENT_EXTERNAL_HOST || "http://localhost:3000"],
   });
 
+  app.set('trust proxy', 1);
+
   
   
 
