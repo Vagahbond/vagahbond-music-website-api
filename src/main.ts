@@ -9,16 +9,21 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap(){
-  const app = await NestFactory.create(AppModule,  {
-    cors: true
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    credentials: true,
+    exposedHeaders: ['Set-Cookie', 'set-cookie', 'Cookie', 'cookie'],
+    origin: [process.env.CLIENT_EXTERNAL_HOST || "http://localhost:3000"],
   });
-  // app.enableCors();
+
+  
   
 
   const options = new DocumentBuilder()
     .setTitle("Vagahbond's website's API")
     .setDescription('An API to back my musical portfolio')
-    .setVersion('0.1')
+    .setVersion('1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

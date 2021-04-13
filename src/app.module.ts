@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { Module, DynamicModule, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
@@ -12,7 +12,6 @@ import { AuthModule } from './auth/auth.module';
 import { StreamingLinksModule } from './streaming-link/streaming-links.module';
 import { ReleaseModule } from './releases/releases.module';
 import { ToursModule } from './tour/tours.module.';
-import { CorsMiddleware } from './middlewares/cors.middleware';
 
 export function DatabaseOrmModule(): DynamicModule {
   // we could load the configuration from dotEnv here,
@@ -41,8 +40,5 @@ export function DatabaseOrmModule(): DynamicModule {
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
-    consumer.apply(CorsMiddleware).forRoutes({ path: "*", method: RequestMethod.ALL})
-  }
-}
+export class AppModule {}
+
