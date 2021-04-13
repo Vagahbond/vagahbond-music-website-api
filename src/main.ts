@@ -15,7 +15,7 @@ async function bootstrap(){
   app.enableCors({
     credentials: true,
     exposedHeaders: ['Set-Cookie', 'set-cookie', 'Cookie', 'cookie'],
-    origin: [process.env.CLIENT_EXTERNAL_HOST || "http://localhost:3000"],
+    origin: [process.env.CLIENT_EXTERNAL_HOST || "http://localhost:3000", "http://front:3000", ],
   });
 
   app.set('trust proxy', 1);
