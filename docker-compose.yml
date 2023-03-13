@@ -2,7 +2,7 @@ version: "3"
 
 volumes:
   postgres:
-  soundhive_minio:
+  soundhive_minio: //TODO
 
 networks:
   backend:
